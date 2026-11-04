@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light dark">
+<title>یار — همراه مالی هوشمند</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root { color-scheme: light;
+    --bg: #f4f6fb; --bg-card: #ffffff; --text: #1a202c; --text-secondary: #64748b;
+    --border: #e2e8f0; --input-bg: #f8fafc; --primary: #6366f1;
+    --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    --gradient-soft: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.08));
+    --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04); --radius: 18px; --radius-sm: 12px;
+  }
+  html.dark-mode, body.dark-mode { color-scheme: dark;
+    --bg: #0f172a; --bg-card: #1e293b; --text: #f1f5f9; --text-secondary: #94a3b8;
+    --border: #334155; --input-bg: #0f172a; --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  html, body { background-color: var(--bg); }
+  html { min-height: 100%; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Vazirmatn',Tahoma,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:100px; transition:background .35s,color .35s; line-height:1.6; }
+  .app { max-width:480px; margin:0 auto; padding:16px; }
+  .header { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; background:var(--bg-card); border-radius:var(--radius); margin-bottom:18px; box-shadow:var(--shadow-sm); border:1px solid var(--border); }
+  .logo { font-weight:800; font-size:1.35rem; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .header-actions { display:flex; gap:10px; align-items:center; }
+  .theme-btn { width:38px; height:38px; border-radius:50%; border:1px solid var(--border); background:var(--input-bg); font-size:1.15rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .user-badge { background:var(--gradient-soft); color:var(--primary); padding:7px 14px; border-radius:20px; font-size:.82rem; font-weight:700; border:1px solid rgba(99,102,241,.15); }
+  .card { background:var(--bg-card); border-radius:var(--radius); padding:20px; margin-bottom:16px; box-shadow:var(--shadow-sm); border:1px solid var(--border); }
+  .card-title { font-size:.95rem; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .tabs { display:flex; gap:6px; margin-bottom:18px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab { flex:1; min-width:58px; padding:11px 5px; border:none; background:var(--bg-card); border-radius:var(--radius-sm); font-family:inherit; font-size:.72rem; font-weight:500; cursor:pointer; color:var(--text-secondary); transition:all .25s; box-shadow:var(--shadow-sm); border:1px solid var(--border); white-space:nowrap; }
+  .tab.active { background:var(--gradient); color:#fff; font-weight:700; border-color:transparent; box-shadow:0 4px 14px rgba(99,102,241,.35); }
+  .tab-content { display:none; animation:fadeUp .35s ease; }
+  .tab-content.active { display:block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .form-group { margin-bottom:14px; }
+  .form-group label { display:block; font-size:.82rem; margin-bottom:7px; color:var(--text-secondary); font-weight:600; }
+  input, select { width:100%; padding:13px 16px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:inherit; font-size:.95rem; background:var(--input-bg); color:var(--text); transition:all .2s; }
+  input:focus, select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.12); }
+  .btn { width:100%; padding:14px; border:none; border-radius:var(--radius-sm); background:var(--gradient); color:#fff; font-family:inherit; font-size:.95rem; font-weight:700; cursor:pointer; transition:all .2s; box-shadow:0 4px 14px rgba(99,102,241,.3); }
+  .btn:active { transform:scale(.975); }
+  .btn:disabled { opacity:.6; cursor:not-allowed; }
+  .btn-secondary { background:var(--input-bg); color:var(--text); box-shadow:none; border:1.5px solid var(--border); }
+  .btn-small { padding:9px 16px; font-size:.82rem; width:auto; }
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .stat-box { padding:16px; border-radius:var(--radius-sm); text-align:center; }
+  .stat-box.income-box { background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.04)); border:1px solid rgba(16,185,129,.15); }
+  .stat-box.expense-box { background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(239,68,68,.04)); border:1px solid rgba(239,68,68,.15); }
+  .stat-label { font-size:.78rem; color:var(--text-secondary); margin-bottom:6px; font-weight:500; }
+  .stat-value { font-size:1.15rem; font-weight:800; }
+  .income-box .stat-value { color:var(--success); }
+  .expense-box .stat-value { color:var(--danger); }
+  .balance-box { margin-top:14px; padding:18px; background:var(--gradient-soft); border-radius:var(--radius-sm); text-align:center; border:1px solid rgba(99,102,241,.12); }
+  .balance-value { font-size:1.55rem; font-weight:800; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-top:4px; }
+  .transaction { display:flex; justify-content:space-between; align-items:center; padding:13px 14px; border-radius:var(--radius-sm); margin-bottom:8px; background:var(--input-bg); border:1px solid var(--border); animation:slideIn .3s ease; }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+  .transaction.income { border-right:3.5px solid var(--success); }
+  .transaction.expense { border-right:3.5px solid var(--danger); }
+  .trans-info { flex:1; }
+  .trans-cat { font-weight:700; font-size:.9rem; }
+  .trans-date { font-size:.72rem; color:var(--text-secondary); margin-top:2px; }
+  .trans-amount { font-weight:800; font-size:.92rem; }
+  .income .trans-amount { color:var(--success); }
+  .expense .trans-amount { color:var(--danger); }
+  .delete-btn { background:none; border:none; color:var(--text-secondary); font-size:1.25rem; cursor:pointer; padding:4px 8px; border-radius:8px; }
+  .bar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .bar-label { font-size:.78rem; width:72px; color:var(--text-secondary); font-weight:500; }
+  .bar-track { flex:1; height:18px; background:var(--border); border-radius:10px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:10px; transition:width .5s; background:var(--gradient); }
+  .bar-amount { font-size:.7rem; color:var(--text-secondary); width:78px; text-align:left; font-weight:600; }
+  .bar-chart-container { height:160px; display:flex; align-items:flex-end; justify-content:space-around; gap:6px; margin-top:16px; padding-bottom:28px; border-bottom:2px solid var(--border); }
+  .donut-container { position:relative; width:130px; height:130px; border-radius:50%; }
+  .donut-inner { position:absolute; top:22%; left:22%; width:56%; height:56%; background:var(--bg-card); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700; color:var(--text-secondary); }
+  .goal-item { padding:16px; background:var(--input-bg); border-radius:var(--radius-sm); margin-bottom:12px; border:1px solid var(--border); }
+  .goal-header { display:flex; justify-content:space-between; margin-bottom:10px; align-items:center; }
+  .goal-name { font-weight:700; font-size:.95rem; }
+  .goal-progress-track { height:9px; background:var(--border); border-radius:10px; overflow:hidden; }
+  .goal-progress-fill { height:100%; background:var(--gradient); border-radius:10px; transition:width .5s; }
+  .goal-meta { display:flex; justify-content:space-between; font-size:.75rem; color:var(--text-secondary); margin-top:8px; font-weight:500; }
+  .plan-card { border:2px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:14px; position:relative; background:var(--bg-card); }
+  .plan-card.featured { border-color:var(--primary); background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(168,85,247,.04)); }
+  .plan-card.active-plan { border-color:var(--success); background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03)); }
+  .plan-badge { position:absolute; top:-11px; right:20px; background:var(--gradient); color:#fff; padding:4px 14px; border-radius:20px; font-size:.7rem; font-weight:700; }
+  .plan-badge.gold { background:linear-gradient(135deg,#f59e0b,#d97706); }
+  .plan-name { font-size:1.15rem; font-weight:800; margin-bottom:4px; }
+  .plan-price { font-size:1.45rem; font-weight:800; color:var(--primary); margin-bottom:14px; }
+  .plan-price small { font-size:.78rem; color:var(--text-secondary); font-weight:500; }
+  .plan-features { list-style:none; margin-bottom:18px; }
+  .plan-features li { padding:7px 0; font-size:.85rem; display:flex; align-items:center; gap:8px; }
+  .plan-features li::before { content:"✓"; color:var(--success); font-weight:800; }
+  .empty { text-align:center; padding:36px 12px; color:var(--text-secondary); font-size:.88rem; }
+  .hidden { display:none !important; }
+  .text-center { text-align:center; }
+  .lock-overlay { background:linear-gradient(135deg,rgba(239,68,68,.06),rgba(239,68,68,.02)); border:1.5px dashed #fca5a5; border-radius:var(--radius-sm); padding:22px; text-align:center; margin-top:10px; }
+  body.dark-mode .lock-overlay { border-color:#7f1d1d; }
+  .lock-icon { font-size:1.9rem; margin-bottom:8px; }
+  .lock-text { font-size:.84rem; color:#b91c1c; line-height:1.85; }
+  body.dark-mode .lock-text { color:#fca5a5; }
+  .insight-box { background:var(--gradient-soft); border-radius:var(--radius-sm); padding:16px; margin-bottom:12px; border-right:3.5px solid var(--primary); }
+  .insight-title { font-size:.84rem; font-weight:700; margin-bottom:6px; }
+  .insight-text { font-size:.84rem; color:var(--text-secondary); line-height:1.9; }
+  .warning-box { background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.04)); border:1.5px solid #fbbf24; border-radius:var(--radius-sm); padding:14px; margin-bottom:12px; }
+  .warning-text { font-size:.84rem; color:#b45309; line-height:1.85; }
+  body.dark-mode .warning-text { color:#fcd34d; }
+  .success-box { background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.04)); border:1.5px solid #6ee7b7; border-radius:var(--radius-sm); padding:14px; margin-bottom:12px; }
+  .success-text { font-size:.84rem; color:#047857; line-height:1.85; }
+  body.dark-mode .success-text { color:#6ee7b7; }
+  .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:#1e293b; color:#fff; padding:13px 24px; border-radius:14px; font-size:.85rem; font-weight:500; z-index:9999; opacity:0; transition:all .3s; pointer-events:none; box-shadow:0 8px 30px rgba(0,0,0,.25); max-width:90%; text-align:center; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .mentor-table { width:100%; border-collapse:collapse; font-size:.8rem; }
+  .mentor-table th { padding:10px; border:1px solid var(--border); background:var(--input-bg); text-align:right; font-weight:700; }
+  .mentor-table td { padding:10px; border:1px solid var(--border); line-height:1.8; }
+  .mentor-cat { font-weight:700; color:var(--primary); }
+  .fab { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); width:62px; height:62px; background:var(--gradient); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.1rem; font-weight:300; box-shadow:0 6px 24px rgba(99,102,241,.45); cursor:pointer; z-index:1000; border:none; }
+  .fab:active { transform:translateX(-50%) scale(.92); }
+  .fab.hidden { display:none !important; }
+  .bottom-sheet-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,.55); backdrop-filter:blur(4px); z-index:1001; opacity:0; pointer-events:none; transition:opacity .3s; }
+  .bottom-sheet-overlay.active { opacity:1; pointer-events:auto; }
+  .bottom-sheet { position:fixed; bottom:0; left:0; right:0; background:var(--bg-card); border-radius:28px 28px 0 0; padding:24px 22px 36px; z-index:1002; transform:translateY(100%); transition:transform .35s cubic-bezier(.32,.72,0,1); max-width:480px; margin:0 auto; max-height:88vh; overflow-y:auto; }
+  .bottom-sheet.active { transform:translateY(0); }
+  .sheet-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+  .sheet-title { font-size:1.15rem; font-weight:800; }
+  .close-sheet { background:var(--input-bg); border:1px solid var(--border); width:34px; height:34px; border-radius:50%; font-size:1.25rem; cursor:pointer; color:var(--text); display:flex; align-items:center; justify-content:center; }
+  .type-toggle { display:flex; background:var(--input-bg); border-radius:var(--radius-sm); padding:4px; margin-bottom:22px; border:1px solid var(--border); }
+  .type-toggle button { flex:1; padding:11px; border:none; background:transparent; border-radius:10px; font-family:inherit; font-size:.92rem; font-weight:600; cursor:pointer; color:var(--text-secondary); }
+  .type-toggle button.active { background:var(--bg-card); color:var(--text); box-shadow:var(--shadow-sm); }
+  .type-toggle button.active.expense-active { color:var(--danger); }
+  .type-toggle button.active.income-active { color:var(--success); }
+  .category-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:22px; }
+  .category-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 4px; border:1.5px solid var(--border); background:var(--bg-card); border-radius:14px; font-family:inherit; font-size:.7rem; font-weight:500; cursor:pointer; color:var(--text); }
+  .category-btn .cat-icon { font-size:1.55rem; margin-bottom:5px; }
+  .category-btn.active { border-color:var(--primary); background:rgba(99,102,241,.1); color:var(--primary); font-weight:700; transform:scale(1.04); }
+  .amount-input-large { width:100%; padding:18px; border:none; border-bottom:3px solid var(--primary); font-size:2rem; font-weight:800; text-align:center; font-family:inherit; margin-bottom:22px; outline:none; background:var(--input-bg); border-radius:14px 14px 0 0; color:var(--text); }
+  .search-box { width:100%; padding:12px 16px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:inherit; font-size:.92rem; background:var(--input-bg); color:var(--text); margin-bottom:14px; }
+  .streak-badge { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; padding:6px 14px; border-radius:20px; font-size:.78rem; font-weight:700; box-shadow:0 3px 10px rgba(245,158,11,.3); }
+  @keyframes flame { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+  .streak-badge .fire { display:inline-block; animation:flame 1.1s infinite; }
+  .custom-cat-item { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--input-bg); border-radius:10px; margin-bottom:8px; border:1px solid var(--border); }
+  .custom-cat-icon { font-size:1.3rem; margin-left:10px; }
+  .trait-pill { background:var(--input-bg); padding:6px 14px; border-radius:20px; font-size:.78rem; font-weight:600; border:1px solid var(--border); }
+  .chart-container { height:150px; margin-top:12px; position:relative; }
+  .mbti-progress-track { height:8px; background:var(--border); border-radius:10px; overflow:hidden; margin-bottom:24px; }
+  .mbti-progress-fill { height:100%; background:var(--gradient); border-radius:10px; transition:width .4s; }
+  .level-card { background:var(--gradient); color:#fff; border-radius:var(--radius); padding:20px; margin-bottom:16px; position:relative; overflow:hidden; }
+  .level-card::after { content:''; position:absolute; top:-30px; left:-30px; width:120px; height:120px; background:rgba(255,255,255,.1); border-radius:50%; }
+  .level-num { font-size:2.8rem; font-weight:800; line-height:1; }
+  .level-label { font-size:.85rem; opacity:.9; margin-top:4px; }
+  .xp-bar { height:8px; background:rgba(255,255,255,.25); border-radius:10px; margin-top:10px; overflow:hidden; }
+  .xp-fill { height:100%; background:#fff; border-radius:10px; transition:width .5s; }
+  .challenge-card { background:var(--input-bg); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:16px; margin-bottom:12px; }
+  .challenge-card.active-ch { border-color:var(--primary); background:rgba(99,102,241,.06); }
+  .challenge-card.completed-ch { border-color:var(--success); background:rgba(16,185,129,.06); }
+  .ch-title { font-weight:700; font-size:.95rem; margin-bottom:4px; }
+  .ch-desc { font-size:.8rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.6; }
+  .ch-progress-track { height:8px; background:var(--border); border-radius:10px; overflow:hidden; margin-bottom:8px; }
+  .ch-progress-fill { height:100%; background:var(--gradient); border-radius:10px; transition:width .4s; }
+  .ch-meta { display:flex; justify-content:space-between; font-size:.75rem; color:var(--text-secondary); }
+  .badge-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .badge-item { text-align:center; padding:14px 8px; background:var(--input-bg); border-radius:var(--radius-sm); border:1px solid var(--border); }
+  .badge-item.locked { opacity:.45; filter:grayscale(.8); }
+  .badge-icon { font-size:1.8rem; margin-bottom:6px; }
+  .badge-name { font-size:.72rem; font-weight:600; line-height:1.4; }
+  .share-modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,.7); backdrop-filter:blur(6px); z-index:2000; display:none; align-items:center; justify-content:center; padding:20px; }
+  .share-modal-overlay.active { display:flex; }
+  .share-modal { background:var(--bg-card); border-radius:24px; width:100%; max-width:360px; max-height:90vh; overflow-y:auto; }
+  .share-card { background:linear-gradient(160deg,#6366f1 0%,#8b5cf6 40%,#a855f7 100%); color:#fff; padding:28px 24px 24px; border-radius:24px 24px 0 0; position:relative; overflow:hidden; }
+  .share-card::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; background:rgba(255,255,255,.12); border-radius:50%; }
+  .share-logo { font-size:1.1rem; font-weight:800; opacity:.9; margin-bottom:18px; }
+  .share-name { font-size:1.35rem; font-weight:800; margin-bottom:4px; }
+  .share-mbti { font-size:.85rem; opacity:.85; margin-bottom:20px; }
+  .share-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+  .share-stat { background:rgba(255,255,255,.15); border-radius:14px; padding:12px; text-align:center; }
+  .share-stat-label { font-size:.72rem; opacity:.85; margin-bottom:4px; }
+  .share-stat-value { font-size:1.05rem; font-weight:800; }
+  .share-insight { background:rgba(255,255,255,.12); border-radius:12px; padding:12px 14px; font-size:.82rem; line-height:1.7; }
+  .share-footer { padding:18px 20px 22px; text-align:center; }
+  .share-actions { display:flex; gap:10px; margin-top:14px; }
+  .share-actions .btn { flex:1; padding:12px; font-size:.85rem; }
+  /* Category Budget */
+  .budget-item { padding:14px; background:var(--input-bg); border-radius:var(--radius-sm); margin-bottom:10px; border:1px solid var(--border); }
+  .budget-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .budget-cat { font-weight:700; font-size:.9rem; }
+  .budget-limit { font-size:.78rem; color:var(--text-secondary); }
+  .budget-progress-track { height:8px; background:var(--border); border-radius:10px; overflow:hidden; margin-bottom:6px; }
+  .budget-progress-fill { height:100%; border-radius:10px; transition:width .4s; }
+  .budget-progress-fill.ok { background:var(--success); }
+  .budget-progress-fill.warn { background:var(--warning); }
+  .budget-progress-fill.danger { background:var(--danger); }
+  .budget-meta { display:flex; justify-content:space-between; font-size:.75rem; color:var(--text-secondary); }
+  /* Recurring */
+  .recurring-item { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--input-bg); border-radius:var(--radius-sm); margin-bottom:8px; border:1px solid var(--border); }
+  .recurring-info { flex:1; }
+  .recurring-name { font-weight:700; font-size:.9rem; }
+  .recurring-meta { font-size:.75rem; color:var(--text-secondary); margin-top:2px; }
+
+  /* Pixel runner game — purple arcade edition */
+  .game-intro{background:linear-gradient(135deg,#24145f 0%,#5630b0 58%,#8056e8 100%);color:#fff;border:2px solid #a78bfa;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(70,45,150,.25)}
+  .game-stats{display:flex;justify-content:space-between;gap:8px;margin-bottom:12px}.game-stat{background:rgba(15,10,55,.34);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:8px 12px;text-align:center;flex:1;box-shadow:inset 0 2px 0 #ffffff18}.game-stat b{display:block;font-size:1.15rem}.game-stat span{font-size:.72rem;opacity:.9}
+  .runner-wrap{position:relative;background:#83aaff;border-radius:16px;overflow:hidden;border:3px solid #4b2a9d;box-shadow:0 7px 22px rgba(35,20,90,.25);width:100%}
+  #runner-canvas{display:block;width:100%;height:clamp(260px,72vw,430px);touch-action:manipulation;image-rendering:pixelated;cursor:pointer}
+  .game-intro{padding:12px;margin-bottom:10px}.game-intro>div:first-child{font-size:1rem!important}.game-intro>div:nth-child(2){font-size:.72rem!important}.game-stat{padding:5px 7px}.game-stat b{font-size:.98rem}.game-stat span{font-size:.65rem}
+  .game-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,12,55,.48);color:#fff;text-align:center;padding:18px}
+  .game-overlay-card{background:linear-gradient(145deg,rgba(43,24,105,.98),rgba(76,43,157,.98));border:2px solid #c4b5fd;border-radius:16px;padding:18px;max-width:290px;width:100%;box-shadow:0 10px 30px #21134b88}.game-overlay-card h3{font-size:1.15rem;margin-bottom:6px}.game-overlay-card p{font-size:.82rem;opacity:.92;margin-bottom:12px;line-height:1.8}
+  .game-actions{display:flex;gap:10px;margin-top:12px;direction:rtl}.game-actions #game-ability-btn{order:0;min-width:0}.game-actions .game-jump{order:1}.game-actions button:not(#game-ability-btn):not(.game-jump){order:2}.game-actions .btn{flex:1}.game-actions #game-ability-btn{background:linear-gradient(135deg,#ef6b35,#b72c27);color:#fff;font-weight:800;box-shadow:0 4px 0 #7d211d}.game-jump{background:linear-gradient(135deg,#8055ef,#4b2aaf);font-size:1.05rem;box-shadow:0 4px 0 #321b78}
+  .game-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .game-character{position:relative;overflow:hidden;border:2px solid #6f63a5;border-radius:15px;padding:12px 8px 10px;text-align:center;background:linear-gradient(160deg,#f1edff,#d8d0ff);color:#24194d;box-shadow:0 4px 0 #51417f}.game-character.selected{border:3px solid #a855f7;box-shadow:0 0 0 3px #8b5cf633,0 4px 0 #5b2eaa;background:linear-gradient(160deg,#fff,#e8d9ff)}.game-avatar{height:82px;display:flex;align-items:center;justify-content:center;font-size:0;line-height:1.5}.game-avatar canvas{width:74px;height:78px;image-rendering:pixelated}.game-character b{display:block;font-size:.9rem}.game-character small{display:block;color:#554a7b;margin:4px 0 8px;min-height:20px}.game-character button{font-family:inherit;border:0;border-radius:9px;padding:8px 7px;background:linear-gradient(180deg,#8358ed,#5630b7);color:white;font-weight:800;width:100%;font-size:.78rem;box-shadow:0 3px 0 #3b217f}.game-character button:disabled{background:linear-gradient(180deg,#25b95b,#168b40);box-shadow:0 3px 0 #12632f}.game-note{font-size:.78rem;color:var(--text-secondary);line-height:1.9;margin-top:12px}
+  .game-shop-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.game-wallet{background:#30206f;color:#fff;border:1px solid #9d83ef;border-radius:999px;padding:6px 10px;font-size:.78rem;font-weight:800;white-space:nowrap}
+  @media(max-width:360px){.game-stats{gap:5px}.game-stat{padding:7px 4px}.game-shop-grid{gap:7px}.game-character{padding:9px 5px}}
+
+
+</style>
+</head>
+<body>
+<script>
+(function(){
+  // Apply the saved appearance on <html> before the page paints; safe in Android WebView.
+  try {
+    var savedTheme = localStorage.getItem('yar_theme_mode_v1');
+    var savedData = localStorage.getItem('yar_app_data_v11');
+    var dark = savedTheme === 'dark';
+    if (savedTheme !== 'dark' && savedTheme !== 'light' && savedData) {
+      dark = !!JSON.parse(savedData).darkMode;
+    }
+    document.documentElement.classList.toggle('dark-mode', dark);
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+  } catch (e) {
+    document.documentElement.classList.remove('dark-mode');
+    document.documentElement.style.colorScheme = 'light';
+  }
+})();
+</script>
+<div class="app">
+  <div class="header">
+    <div class="logo">یار</div>
+    <div class="header-actions">
+      <button class="theme-btn" onclick="toggleDarkMode()">🌓</button>
+      <div class="user-badge" id="user-badge">مهمان</div>
+    </div>
+  </div>
+
+  <div id="screen-welcome">
+    <div class="card text-center">
+      <div style="font-size:3.2rem;margin-bottom:12px;">👋</div>
+      <h2 style="font-size:1.35rem;margin-bottom:8px;font-weight:800;">به یار خوش آمدی</h2>
+      <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:24px;line-height:1.85;">همراه مالی هوشمند تو. اول تیپ شخصیتی‌ات را بشناس، بعد با شناخت خودت بودجه‌بندی کن.</p>
+      <div class="form-group"><label>اسمت چیه؟</label><input type="text" id="input-name" placeholder="مثلاً علی" autocomplete="off"></div>
+      <div class="form-group"><label>موجودی فعلی حساب (تومان)</label><input type="number" id="input-init-balance" placeholder="مثلاً ۵٬۰۰۰٬۰۰۰" inputmode="numeric"></div>
+      <button class="btn" onclick="startApp()">شروع کن</button>
+    </div>
+  </div>
+
+  <div id="screen-mbti" class="hidden">
+    <div class="card">
+      <div class="mbti-progress-track"><div id="mbti-progress" class="mbti-progress-fill" style="width:0%"></div></div>
+      <p id="mbti-question" style="font-size:1.05rem;font-weight:700;margin-bottom:22px;line-height:1.75;"></p>
+      <div id="mbti-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+  </div>
+
+  <div id="screen-mbti-result" class="hidden">
+    <div class="card text-center">
+      <p style="color:var(--text-secondary);font-size:.85rem;font-weight:500;">تیپ شخصیتی تو</p>
+      <div id="mbti-type" style="font-size:3.6rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:12px 0;"></div>
+      <div id="mbti-title" style="font-size:1.25rem;font-weight:700;margin-bottom:12px;"></div>
+      <p id="mbti-desc" style="color:var(--text-secondary);line-height:1.9;font-size:.9rem;margin-bottom:22px;"></p>
+      <div id="mbti-traits" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:24px;"></div>
+      <button class="btn" onclick="enterDashboard()">ورود به داشبورد</button>
+    </div>
+  </div>
+
+  <div id="screen-dashboard" class="hidden">
+    <div class="tabs">
+      <button class="tab active" data-tab="home" onclick="switchTab('home')">خانه</button>
+      <button class="tab" data-tab="challenges" onclick="switchTab('challenges')">چالش‌ها</button>
+      <button class="tab" data-tab="reports" onclick="switchTab('reports')">گزارش‌ها</button>
+      <button class="tab" data-tab="budget" onclick="switchTab('budget')">بودجه</button>
+      <button class="tab" data-tab="goals" onclick="switchTab('goals')">اهداف</button>
+      <button class="tab" data-tab="profile" onclick="switchTab('profile')">پروفایل</button>
+      <button class="tab" data-tab="game" onclick="switchTab('game')">🎮 بازی</button>
+      <button class="tab" data-tab="plans" onclick="switchTab('plans')">اشتراک</button>
+    </div>
+
+    <!-- Home -->
+    <div id="tab-home" class="tab-content active">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div class="card-title" style="margin:0;">خلاصه وضعیت</div>
+          <div id="streak-badge" class="streak-badge hidden"><span class="fire">🔥</span> <span id="streak-count">۰</span> روز</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box income-box"><div class="stat-label">درآمد کل</div><div class="stat-value" id="home-income">۰</div></div>
+          <div class="stat-box expense-box"><div class="stat-label">هزینه کل</div><div class="stat-value" id="home-expense">۰</div></div>
+        </div>
+        <div class="balance-box"><div class="stat-label">موجودی فعلی</div><div class="balance-value" id="home-balance">۰ تومان</div></div>
+      </div>
+      <div class="level-card" onclick="switchTab('challenges')" style="cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div><div class="level-num" id="home-level">۱</div><div class="level-label">سطح تو</div></div>
+          <div style="text-align:left;font-size:.85rem;opacity:.95;"><div id="home-points">۰ امتیاز</div><div style="margin-top:4px;opacity:.8;" id="home-next-level">تا سطح بعد: ۱۰۰</div></div>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="home-xp-fill" style="width:0%"></div></div>
+      </div>
+      <div class="card"><div class="card-title">📊 بینش هوشمند</div><div id="insight-section"></div></div>
+      <div class="card"><div class="card-title">📅 بینش این هفته</div><div id="weekly-insight-section"></div></div>
+      <div class="card"><div class="card-title">آخرین تراکنش‌ها</div><div id="home-transactions"></div></div>
+    </div>
+
+    <!-- Challenges -->
+    <div id="tab-game" class="tab-content">
+      <div class="game-intro">
+        <div style="font-size:1.15rem;font-weight:800;margin-bottom:5px">🏃‍♂️ بازی</div>
+        <div style="font-size:.82rem;opacity:.9">از موانع بپر، رکورد بزن و با امتیازها شخصیت‌های تازه آزاد کن!</div>
+        <div class="game-stats" style="margin-top:13px;margin-bottom:0">
+          <div class="game-stat"><b id="game-distance">۰</b><span>متر</span></div>
+          <div class="game-stat"><b id="game-points">۰</b><span>امتیاز بازی</span></div>
+          <div class="game-stat"><b id="game-best">۰</b><span>بهترین رکورد</span></div>
+          <div class="game-stat"><b id="game-coins">۰</b><span>سکه جمع‌شده</span></div>
+        </div>
+      </div>
+      <div class="runner-wrap">
+        <canvas id="runner-canvas" width="800" height="440" aria-label="بازی دونده"></canvas>
+        <div class="game-overlay" id="game-overlay"><div class="game-overlay-card"><div style="font-size:2.5rem">🏃🏻‍♂️</div><h3 id="game-overlay-title">آماده‌ای؟</h3><p id="game-overlay-text">برای شروع دکمه را بزن. برای پریدن روی صفحه لمس کن یا دکمه پرش را بزن.</p><button class="btn" onclick="startAmirGame()">شروع بازی</button></div></div>
+      </div>
+      <div class="game-actions"><button class="btn btn-secondary" id="game-ability-btn" onclick="useGameAbility()" style="display:none">✨ قدرت ویژه</button><button class="btn game-jump" onclick="jumpAmir()">⬆️ پرش</button><button class="btn btn-secondary" onclick="pauseAmirGame()">⏸ مکث</button></div>
+      <div class="card" style="margin-top:14px">
+        <div class="game-shop-title"><div class="card-title" style="margin:0">⭐ فروشگاه شخصیت‌ها</div><div class="game-wallet">⭐ <span id="game-shop-points">۰</span></div></div>
+        <div class="game-shop-grid" id="game-shop-grid"></div>
+        <div class="game-note">هر سکه ۱ امتیاز و هر ۲۵۰ متر ۵۰ امتیاز دارد. مهرداد آهنربای ۵ ثانیه‌ای، شهرام پرش دوبل و رستم دکمه پرتاب موشک با شارژ ۱۰ ثانیه‌ای دارد. فریدون و دکتر بی‌غم ویژه اشتراک نقره‌یار و الماس‌یار هستند. امتیازهای بازی جدا از امتیازهای بخش مالی یار ذخیره می‌شوند. شخصیت‌های آزادشده برای همیشه در حساب همین دستگاه باقی می‌مانند.</div>
+      </div>
+    </div>
+
+    <div id="tab-challenges" class="tab-content">
+      <div class="level-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div><div class="level-num" id="ch-level">۱</div><div class="level-label">سطح فعلی</div></div>
+          <div style="text-align:left;"><div style="font-size:1.1rem;font-weight:700;" id="ch-points">۰</div><div style="font-size:.8rem;opacity:.9;">امتیاز</div></div>
+        </div>
+        <div class="xp-bar" style="margin-top:14px;"><div class="xp-fill" id="ch-xp-fill" style="width:0%"></div></div>
+        <div style="font-size:.78rem;opacity:.85;margin-top:8px;" id="ch-xp-text">۰ / ۱۰۰ تا سطح بعد</div>
+      </div>
+      <div class="card"><div class="card-title">🏆 نشان‌های تو</div><div class="badge-grid" id="badges-grid"></div></div>
+      <div class="card"><div class="card-title">🎯 چالش‌های فعال و موجود</div><div id="challenges-list"></div></div>
+    </div>
+
+    <!-- Reports -->
+    <div id="tab-reports" class="tab-content">
+      <div class="card"><div class="card-title">روند هزینه‌های ماه</div><div id="line-chart-container" class="chart-container"></div></div>
+      <div class="card">
+        <div class="card-title">دسته‌بندی هزینه‌ها</div>
+        <div style="display:flex;align-items:center;justify-content:space-around;margin-top:16px;gap:16px;">
+          <div id="donut-chart-container" class="donut-container"></div>
+          <div id="donut-legend" style="font-size:.8rem;line-height:2.1;"></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-title">رتبه‌بندی دسته‌ها</div><div id="ranking-list" style="margin-top:10px;"></div></div>
+      <div class="card"><div class="card-title">📆 تحلیل روزهای هفته</div><div id="weekday-analysis"></div></div>
+      <div class="card text-center">
+        <button class="btn" onclick="openShareCard()">✨ ساخت کارت خلاصه زیبا</button>
+        <button class="btn btn-secondary" style="margin-top:10px;" onclick="shareReport()">📤 اشتراک‌گذاری متنی</button>
+      </div>
+    </div>
+
+    <!-- Budget -->
+    <div id="tab-budget" class="tab-content">
+      <div class="card">
+        <div class="card-title">ثبت تراکنش جدید</div>
+        <div class="form-group"><label>نوع</label><select id="trans-type"><option value="expense">هزینه</option><option value="income">درآمد</option></select></div>
+        <div class="form-group"><label>دسته‌بندی</label><select id="trans-category"></select></div>
+        <div class="form-group"><label>مبلغ (تومان)</label><input type="number" id="trans-amount" placeholder="مثلاً ۵۰٬۰۰۰" inputmode="numeric"></div>
+        <button class="btn" onclick="addTransaction()">افزودن تراکنش</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 بودجه دسته‌بندی‌شده</div>
+        <div id="category-budgets-section"></div>
+        <button class="btn btn-secondary btn-small" style="margin-top:12px;width:100%;" onclick="addCategoryBudget()">➕ تعیین سقف برای دسته</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔄 تراکنش‌های تکراری</div>
+        <div id="recurring-list"></div>
+        <button class="btn btn-secondary btn-small" style="margin-top:12px;width:100%;" onclick="addRecurring()">➕ افزودن تراکنش تکراری</button>
+      </div>
+
+      <div class="card"><div class="card-title">⚠️ هشدار هزینه</div><div id="overspend-section"></div></div>
+      <div class="card"><div class="card-title">روند ۶ ماه گذشته</div><div id="bar-chart-container" class="bar-chart-container"></div></div>
+      <div class="card"><div class="card-title">هزینه‌ها به تفکیک دسته</div><div id="category-chart" class="bar-chart"></div></div>
+      <div class="card">
+        <div class="card-title">همه تراکنش‌ها</div>
+        <input type="text" class="search-box" id="search-transactions" placeholder="🔍 جستجو..." oninput="renderTransactions('all-transactions', filterTransactions())">
+        <div id="all-transactions"></div>
+      </div>
+    </div>
+
+    <!-- Goals -->
+    <div id="tab-goals" class="tab-content">
+      <div class="card">
+        <div class="card-title">هدف مالی جدید</div>
+        <div class="form-group"><label>نام هدف</label><input type="text" id="goal-name" placeholder="مثلاً خرید لپ‌تاپ"></div>
+        <div class="form-group"><label>مبلغ هدف (تومان)</label><input type="number" id="goal-target" placeholder="مثلاً ۱۰۰٬۰۰۰٬۰۰۰" inputmode="numeric"></div>
+        <div class="form-group"><label>مبلغ پس‌انداز فعلی (تومان)</label><input type="number" id="goal-saved" placeholder="مثلاً ۱۰٬۰۰۰٬۰۰۰" inputmode="numeric"></div>
+        <button class="btn" onclick="addGoal()">افزودن هدف</button>
+      </div>
+      <div class="card"><div class="card-title">اهداف من</div><div id="goals-list"></div></div>
+    </div>
+
+    <!-- Profile -->
+    <div id="tab-profile" class="tab-content">
+      <div class="card text-center">
+        <div class="card-title" style="justify-content:center;">تیپ شخصیتی تو</div>
+        <div id="profile-type" style="font-size:3.2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></div>
+        <div id="profile-title" style="font-size:1.15rem;font-weight:700;margin:8px 0;"></div>
+        <p id="profile-desc" style="color:var(--text-secondary);line-height:1.9;font-size:.9rem;"></p>
+        <div id="profile-traits" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px;"></div>
+      </div>
+      <div class="card"><div class="card-title">🧠 تحلیل مالی بر اساس شخصیت</div><div id="mbti-finance-section"></div></div>
+      <div class="card"><div class="card-title">📘 پرونده کامل شخصیت و MBTI</div><div id="mbti-deep-profile" style="line-height:1.95;color:var(--text-secondary);font-size:.9rem;"></div></div>
+      <div class="card"><div class="card-title">🎓 مربی مالی</div><div id="mentor-section"></div></div>
+      <div class="card">
+        <div class="card-title">🏷️ دسته‌بندی‌های سفارشی</div>
+        <div id="custom-categories-list"></div>
+        <button class="btn btn-secondary btn-small" style="margin-top:12px;width:100%;" onclick="addCustomCategory()">➕ افزودن دسته جدید</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🛡️ امنیت و نگهداری اطلاعات</div>
+        <p style="font-size:.82rem;color:var(--text-secondary);line-height:1.9;margin-bottom:12px;">اطلاعات مالی فعلاً روی همین دستگاه و در حافظه مرورگر ذخیره می‌شود. برای انتقال به گوشی دیگر، پشتیبان رمزگذاری‌شده بساز و رمز آن را در جای امن نگه دار. اگر داده‌های مرورگر پاک شوند، ممکن است اطلاعات محلی از بین بروند.</p>
+        <div style="font-size:.78rem;color:var(--text-secondary);margin-bottom:12px;">⚠️ رمزگذاری فایل پشتیبان، اطلاعات داخل حافظه برنامه را رمزگذاری نمی‌کند. برای همگام‌سازی ابری و قفل امنیتی واقعی، نسخه سروری و بررسی امنیتی جداگانه لازم است.</div>
+        <button class="btn btn-secondary" style="margin-bottom:10px;" onclick="exportBackup()">🔐 ساخت پشتیبان رمزگذاری‌شده</button>
+        <button class="btn btn-secondary" style="margin-bottom:10px;" onclick="document.getElementById('import-file').click()">📥 بازیابی پشتیبان (رمزدار یا قدیمی)</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importBackup(event)">
+        <button class="btn btn-secondary" style="margin-bottom:10px;" onclick="editInitialBalance()">💰 ویرایش موجودی اولیه</button>
+        <button class="btn btn-secondary" onclick="retakeMbti()">تست MBTI دوباره</button>
+      </div>
+    </div>
+
+    <!-- Plans -->
+    <div id="tab-plans" class="tab-content">
+      <div class="card" style="background:var(--input-bg);">
+        <div class="text-center">
+          <div style="font-size:.82rem;color:var(--text-secondary);font-weight:500;">پلن فعلی تو</div>
+          <div id="current-plan-name" style="font-size:1.3rem;font-weight:800;color:var(--primary);margin-top:6px;">یار (رایگان)</div>
+        </div>
+      </div>
+
+      <div class="plan-card" id="plan-silver-card">
+        <div class="plan-badge">محبوب</div>
+        <div class="plan-name">🥈 نقره‌یار</div>
+        <div class="plan-price">۸۰٬۰۰۰ <small>تومان / ۶ ماه</small></div>
+        <ul class="plan-features">
+          <li>ثبت نامحدود تراکنش و اهداف</li>
+          <li>بینش ماهانه + بینش هفتگی</li>
+          <li>گزارش‌های گرافیکی کامل</li>
+          <li>بودجه دسته‌بندی‌شده با سقف و هشدار</li>
+          <li>تراکنش‌های تکراری (حقوق، اجاره و...)</li>
+          <li>مربی مالی — تحلیل ۶ بُعدی + ۲ توصیه</li>
+          <li>دسته‌بندی سفارشی + اشتراک‌گذاری گزارش</li>
+        </ul>
+        <button class="btn" id="btn-silver" onclick="activatePlan('silver')">فعال‌سازی نقره‌یار</button>
+      </div>
+
+      <div class="plan-card featured" id="plan-gold-card">
+        <div class="plan-badge gold">کامل</div>
+        <div class="plan-name">🥇 الماس‌یار</div>
+        <div class="plan-price">۱۱۰٬۰۰۰ <small>تومان / ۱ سال</small></div>
+        <ul class="plan-features">
+          <li>همه امکانات نقره‌یار</li>
+          <li>گزارش هوشمند ماهانه شخصی‌سازی‌شده با MBTI</li>
+          <li>هشدار هوشمند رفتاری قبل از overspend</li>
+          <li>تحلیل روزهای هفته + الگوی خرج</li>
+          <li>مربی مالی کامل + نمودار راداری</li>
+          <li>همه نقل‌قول‌ها و توصیه‌ها</li>
+        </ul>
+        <button class="btn" id="btn-gold" onclick="activatePlan('gold')">فعال‌سازی الماس‌یار</button>
+      </div>
+
+      <div class="card" style="background:var(--input-bg);">
+        <p style="font-size:.75rem;color:var(--text-secondary);line-height:1.85;text-align:center;">
+          ⚠️ پرداخت درون‌برنامه‌ای مایکت هنوز به این نسخه متصل نشده است؛ فعال‌سازی اشتراک فعلاً آزمایشی است.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <button class="fab hidden" id="fab-btn" onclick="openQuickSheet()">+</button>
+  <div class="bottom-sheet-overlay" id="sheet-overlay" onclick="closeQuickSheet()"></div>
+  <div class="bottom-sheet" id="quick-sheet">
+    <div class="sheet-header"><div class="sheet-title">ثبت سریع</div><button class="close-sheet" onclick="closeQuickSheet()">×</button></div>
+    <div class="type-toggle">
+      <button id="type-expense" class="active expense-active" onclick="setQuickType('expense')">هزینه</button>
+      <button id="type-income" onclick="setQuickType('income')">درآمد</button>
+    </div>
+    <input type="number" class="amount-input-large" id="quick-amount" placeholder="۰" inputmode="numeric">
+    <div class="category-grid" id="quick-categories"></div>
+    <button class="btn" onclick="submitQuickTransaction()">ثبت تراکنش</button>
+  </div>
+</div>
+
+<div class="share-modal-overlay" id="share-modal">
+  <div class="share-modal">
+    <div id="share-card-content" class="share-card">
+      <div class="share-logo">یار</div>
+      <div class="share-name" id="share-name">علی</div>
+      <div class="share-mbti" id="share-mbti">تیپ شخصیتی: INTJ</div>
+      <div class="share-stats">
+        <div class="share-stat"><div class="share-stat-label">درآمد</div><div class="share-stat-value" id="share-income">۰</div></div>
+        <div class="share-stat"><div class="share-stat-label">هزینه</div><div class="share-stat-value" id="share-expense">۰</div></div>
+        <div class="share-stat"><div class="share-stat-label">موجودی</div><div class="share-stat-value" id="share-balance">۰</div></div>
+        <div class="share-stat"><div class="share-stat-label">استریک</div><div class="share-stat-value" id="share-streak">۰ روز</div></div>
+      </div>
+      <div class="share-insight" id="share-insight">با یار هوشمندانه‌تر خرج کن ✨</div>
+    </div>
+    <div class="share-footer">
+      <div style="font-size:.8rem;color:var(--text-secondary);margin-bottom:4px;">کارت خلاصه ماهانه تو</div>
+      <div class="share-actions">
+        <button class="btn" onclick="downloadShareCard()">📷 دانلود تصویر</button>
+        <button class="btn btn-secondary" onclick="closeShareCard()">بستن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var STORAGE_KEY = 'yar_app_data_v11';
+var LEGACY_STORAGE_KEYS = ['yar_app_data_v10'];
+var RECOVERY_KEY = 'yar_app_recovery_v1';
+var BACKUP_FORMAT = 'yar-encrypted-backup-v1';
+var appData = {
+  name:'', mbtiType:null, transactions:[], goals:[], plan:'free',
+  initialBalance:0, darkMode:false, lastLoginDate:null, streak:0,
+  customCategories:[], points:0, level:1, badges:[], activeChallenges:[], completedChallenges:[],
+  categoryBudgets: {}, recurring: [], gamePoints:0, gameBest:0, gameUnlocked:['amir'], gameCharacter:'amir', gameAwardedMeters:0
+};
+
+var defaultCategories = [
+  {name:'خوراک',icon:'🍔',type:'expense'},{name:'حمل‌ونقل',icon:'🚗',type:'expense'},
+  {name:'مسکن',icon:'🏠',type:'expense'},{name:'پوشاک',icon:'👕',type:'expense'},
+  {name:'سرگرمی',icon:'🎮',type:'expense'},{name:'درمان',icon:'💊',type:'expense'},
+  {name:'حقوق',icon:'💼',type:'income'},{name:'پروژه',icon:'💻',type:'income'},
+  {name:'سایر',icon:'📦',type:'expense'}
+];
+
+var CHALLENGES = [
+  {id:'streak7',title:'۷ روز متوالی',desc:'۷ روز پشت سر هم تراکنش ثبت کن',type:'streak',target:7,reward:80,icon:'🔥'},
+  {id:'streak14',title:'۱۴ روز آتشین',desc:'۱۴ روز متوالی ثبت کن',type:'streak',target:14,reward:150,icon:'⚡'},
+  {id:'trans20',title:'۲۰ تراکنش',desc:'در مجموع ۲۰ تراکنش ثبت کن',type:'count',target:20,reward:60,icon:'📝'},
+  {id:'trans50',title:'۵۰ تراکنش',desc:'۵۰ تراکنش ثبت کن',type:'count',target:50,reward:120,icon:'📊'},
+  {id:'goal1',title:'اولین هدف',desc:'یک هدف مالی بساز و به ۵۰٪ برس',type:'goal_progress',target:50,reward:100,icon:'🎯'},
+  {id:'no_fun7',title:'هفته بدون سرگرمی',desc:'۷ روز هیچ هزینه‌ای در دسته سرگرمی نکن',type:'no_category',category:'سرگرمی',target:7,reward:90,icon:'🧘'},
+  {id:'save_goal',title:'پس‌اندازکننده',desc:'به یک هدف حداقل ۳۰٪ پیشرفت بده',type:'goal_progress',target:30,reward:70,icon:'💰'}
+];
+
+var BADGES = [
+  {id:'first_trans',name:'اولین قدم',icon:'🌱',desc:'اولین تراکنش'},
+  {id:'streak3',name:'شروع خوب',icon:'🔥',desc:'۳ روز استریک'},
+  {id:'streak7',name:'هفت‌روزه',icon:'⚡',desc:'۷ روز استریک'},
+  {id:'streak30',name:'استاد نظم',icon:'👑',desc:'۳۰ روز استریک'},
+  {id:'level5',name:'سطح ۵',icon:'🏅',desc:'رسیدن به سطح ۵'},
+  {id:'level10',name:'سطح ۱۰',icon:'💎',desc:'رسیدن به سطح ۱۰'},
+  {id:'challenger',name:'چالش‌گر',icon:'🎯',desc:'اولین چالش کامل'},
+  {id:'saver',name:'پس‌اندازگر',icon:'🏦',desc:'یک هدف کامل'},
+  {id:'analyst',name:'تحلیل‌گر',icon:'📈',desc:'استفاده از گزارش‌ها'}
+];
+
+function formatMoney(n){ return Number(n).toLocaleString('fa-IR')+' تومان'; }
+function showToast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},3200); }
+function isValidAppData(data){
+  return !!data && typeof data==='object' && !Array.isArray(data) &&
+    Array.isArray(data.transactions) && Array.isArray(data.goals) &&
+    typeof data.initialBalance==='number' && isFinite(data.initialBalance);
+}
+function loadData(){
+  try{
+    var s=localStorage.getItem(STORAGE_KEY);
+    if(!s){
+      for(var li=0;li<LEGACY_STORAGE_KEYS.length;li++){
+        var legacy=localStorage.getItem(LEGACY_STORAGE_KEYS[li]);
+        if(legacy){s=legacy;break;}
+      }
+    }
+    if(s){var parsed=JSON.parse(s);if(isValidAppData(parsed))appData=Object.assign(appData,parsed);else throw new Error('ساختار داده نامعتبر است');}
+    var savedThemeMode=null;try{savedThemeMode=localStorage.getItem('yar_theme_mode_v1');}catch(themeReadError){}
+    applyTheme(savedThemeMode==='dark'?true:(savedThemeMode==='light'?false:!!appData.darkMode));
+    if(!appData.customCategories) appData.customCategories=[];
+    if(appData.streak===undefined) appData.streak=0;
+    if(appData.points===undefined) appData.points=0;
+    if(appData.level===undefined) appData.level=1;
+    if(!appData.badges) appData.badges=[];
+    if(!appData.activeChallenges) appData.activeChallenges=[];
+    if(!appData.completedChallenges) appData.completedChallenges=[];
+    if(!appData.categoryBudgets) appData.categoryBudgets={};
+    if(!appData.recurring) appData.recurring=[];
+    if(appData.gamePoints===undefined) appData.gamePoints=0;
+    if(appData.gameBest===undefined) appData.gameBest=0;
+    if(!appData.gameUnlocked) appData.gameUnlocked=['amir'];
+    if(!appData.gameUnlocked.includes('amir')) appData.gameUnlocked.unshift('amir');
+    if(!appData.gameCharacter) appData.gameCharacter='amir';
+    if(appData.gameAwardedMeters===undefined) appData.gameAwardedMeters=0;
+    if(appData.gameCoins===undefined) appData.gameCoins=0;
+  }catch(e){
+    try{var recovery=localStorage.getItem(RECOVERY_KEY);if(recovery){var recovered=JSON.parse(recovery);if(isValidAppData(recovered)){appData=Object.assign(appData,recovered);setTimeout(function(){alert('یار یک نسخه بازیابی از اطلاعات پیدا کرد و آن را بارگذاری کرد. لطفاً همین حالا پشتیبان بگیر.');},300);}}}catch(ignore){}
+    setTimeout(function(){alert('بخشی از اطلاعات ذخیره‌شده قابل خواندن نبود. اگر فایل پشتیبان داری، از بخش پروفایل آن را بازیابی کن.');},350);
+  }
+}
+function saveData(){
+  try{
+    var serialized=JSON.stringify(appData);
+    var previous=localStorage.getItem(STORAGE_KEY);
+    if(previous){try{var old=JSON.parse(previous);if(isValidAppData(old))localStorage.setItem(RECOVERY_KEY,JSON.stringify(old));}catch(ignore){}}
+    localStorage.setItem(STORAGE_KEY,serialized);
+    return true;
+  }catch(e){
+    showToast('⚠️ ذخیره انجام نشد؛ فضای مرورگر پر است. پشتیبان بگیر.');
+    return false;
+  }
+}
+function applyTheme(dark){
+  dark=!!dark;
+  var root=document.documentElement;
+  if(root){root.classList.toggle('dark-mode',dark);root.style.colorScheme=dark?'dark':'light';}
+  if(document.body){document.body.classList.toggle('dark-mode',dark);}
+  appData.darkMode=dark;
+  try{localStorage.setItem('yar_theme_mode_v1',dark?'dark':'light');}catch(e){}
+}
+function toggleDarkMode(){
+  var root=document.documentElement;
+  var next=!(root && root.classList.contains('dark-mode'));
+  applyTheme(next);
+  saveData();
+}
+function hasSilver(){ return appData.plan==='silver'||appData.plan==='gold'; }
+function hasGold(){ return appData.plan==='gold'; }
+
+function addPoints(pts, reason){
+  appData.points += pts;
+  var needed = appData.level * 100;
+  while(appData.points >= needed){
+    appData.points -= needed; appData.level += 1; needed = appData.level * 100;
+    showToast('🎉 تبریک! به سطح '+appData.level+' رسیدی');
+    checkBadge('level5'); checkBadge('level10');
+  }
+  saveData();
+  if(reason) showToast('+'+pts+' امتیاز — '+reason);
+}
+function getXpProgress(){ return Math.min(100, (appData.points / (appData.level*100)) * 100); }
+function checkBadge(id){
+  if(appData.badges.indexOf(id)!==-1) return;
+  var ok=false;
+  if(id==='first_trans'&&appData.transactions.length>=1) ok=true;
+  if(id==='streak3'&&appData.streak>=3) ok=true;
+  if(id==='streak7'&&appData.streak>=7) ok=true;
+  if(id==='streak30'&&appData.streak>=30) ok=true;
+  if(id==='level5'&&appData.level>=5) ok=true;
+  if(id==='level10'&&appData.level>=10) ok=true;
+  if(id==='challenger'&&appData.completedChallenges.length>=1) ok=true;
+  if(id==='saver'&&appData.goals.some(function(g){return g.saved>=g.target;})) ok=true;
+  if(ok){ appData.badges.push(id); saveData(); var b=BADGES.find(function(x){return x.id===id;}); if(b) showToast('🏅 نشان جدید: '+b.name); }
+}
+
+function startChallenge(id){
+  if(appData.activeChallenges.some(function(c){return c.id===id;})){ showToast('این چالش الان فعاله'); return; }
+  if(appData.completedChallenges.indexOf(id)!==-1){ showToast('قبلاً کامل شده'); return; }
+  var ch=CHALLENGES.find(function(c){return c.id===id;}); if(!ch) return;
+  appData.activeChallenges.push({id:id, startDate:new Date().toISOString().slice(0,10), progress:0});
+  saveData(); showToast('🎯 چالش «'+ch.title+'» شروع شد!'); renderChallenges();
+}
+function updateChallengesProgress(){
+  var changed=false;
+  appData.activeChallenges.forEach(function(ac){
+    var ch=CHALLENGES.find(function(c){return c.id===ac.id;}); if(!ch) return;
+    var progress=0;
+    if(ch.type==='streak') progress=Math.min(appData.streak, ch.target);
+    else if(ch.type==='count') progress=Math.min(appData.transactions.length, ch.target);
+    else if(ch.type==='goal_progress'){
+      var maxPct=0; appData.goals.forEach(function(g){ var p=(g.saved/g.target)*100; if(p>maxPct) maxPct=p; });
+      progress=Math.min(Math.round(maxPct), ch.target);
+    } else if(ch.type==='no_category'){
+      var has=false; appData.transactions.slice(-15).forEach(function(t){ if(t.category===ch.category&&t.type==='expense') has=true; });
+      progress=has?0:Math.min(appData.streak, ch.target);
+    }
+    if(progress!==ac.progress){ ac.progress=progress; changed=true; }
+    if(progress>=ch.target){
+      appData.completedChallenges.push(ac.id);
+      appData.activeChallenges=appData.activeChallenges.filter(function(c){return c.id!==ac.id;});
+      addPoints(ch.reward, 'چالش «'+ch.title+'» کامل شد!');
+      checkBadge('challenger'); changed=true;
+    }
+  });
+  if(changed) saveData();
+}
+function renderChallenges(){
+  updateChallengesProgress();
+  document.getElementById('ch-level').textContent=appData.level.toLocaleString('fa-IR');
+  document.getElementById('ch-points').textContent=appData.points.toLocaleString('fa-IR');
+  var needed=appData.level*100;
+  document.getElementById('ch-xp-fill').style.width=getXpProgress()+'%';
+  document.getElementById('ch-xp-text').textContent=appData.points.toLocaleString('fa-IR')+' / '+needed.toLocaleString('fa-IR')+' تا سطح بعد';
+  var hl=document.getElementById('home-level');
+  if(hl){ hl.textContent=appData.level.toLocaleString('fa-IR'); document.getElementById('home-points').textContent=appData.points.toLocaleString('fa-IR')+' امتیاز'; document.getElementById('home-next-level').textContent='تا سطح بعد: '+(needed-appData.points).toLocaleString('fa-IR'); document.getElementById('home-xp-fill').style.width=getXpProgress()+'%'; }
+  var grid=document.getElementById('badges-grid');
+  if(grid){ grid.innerHTML=''; BADGES.forEach(function(b){ var unlocked=appData.badges.indexOf(b.id)!==-1; var el=document.createElement('div'); el.className='badge-item'+(unlocked?'':' locked'); el.innerHTML='<div class="badge-icon">'+b.icon+'</div><div class="badge-name">'+b.name+'</div>'; el.title=b.desc; grid.appendChild(el); }); }
+  var list=document.getElementById('challenges-list'); if(!list) return; list.innerHTML='';
+  CHALLENGES.forEach(function(ch){
+    var isActive=appData.activeChallenges.some(function(c){return c.id===ch.id;});
+    var isCompleted=appData.completedChallenges.indexOf(ch.id)!==-1;
+    var ac=appData.activeChallenges.find(function(c){return c.id===ch.id;});
+    var progress=ac?ac.progress:(isCompleted?ch.target:0);
+    var pct=Math.min(100,(progress/ch.target)*100);
+    var el=document.createElement('div'); el.className='challenge-card'+(isActive?' active-ch':'')+(isCompleted?' completed-ch':'');
+    var statusHtml='';
+    if(isCompleted) statusHtml='<div style="color:var(--success);font-weight:700;font-size:.82rem;">✅ کامل شد (+'+ch.reward+' امتیاز)</div>';
+    else if(isActive) statusHtml='<div class="ch-progress-track"><div class="ch-progress-fill" style="width:'+pct+'%"></div></div><div class="ch-meta"><span>'+progress+' / '+ch.target+'</span><span>'+Math.round(pct)+'٪</span></div>';
+    else statusHtml='<button class="btn btn-small" style="margin-top:8px;" onclick="startChallenge(\''+ch.id+'\')">شروع چالش</button>';
+    el.innerHTML='<div style="display:flex;gap:10px;align-items:flex-start;"><div style="font-size:1.6rem;">'+ch.icon+'</div><div style="flex:1;"><div class="ch-title">'+ch.title+'</div><div class="ch-desc">'+ch.desc+'</div>'+statusHtml+'</div></div>';
+    list.appendChild(el);
+  });
+}
+
+function checkStreak(){
+  var today=new Date().toDateString();
+  if(appData.lastLoginDate!==today){
+    var yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+    if(appData.lastLoginDate===yesterday.toDateString()) appData.streak+=1; else appData.streak=1;
+    appData.lastLoginDate=today; saveData();
+    checkBadge('streak3'); checkBadge('streak7'); checkBadge('streak30');
+  }
+  if(appData.streak>1){ var badge=document.getElementById('streak-badge'); if(badge){ badge.classList.remove('hidden'); document.getElementById('streak-count').textContent=appData.streak.toLocaleString('fa-IR'); } }
+}
+
+function checkReminder(){
+  if(appData.transactions.length===0){ setTimeout(function(){ showToast('🎉 به یار خوش اومدی '+appData.name+' جان! اولین تراکنشت رو با دکمه + ثبت کن.'); },1600); return; }
+  var last=appData.transactions[appData.transactions.length-1];
+  var todayStr=new Date().toLocaleDateString('fa-IR');
+  if(last.date===todayStr) return;
+  var yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+  if(last.date===yesterday.toLocaleDateString('fa-IR')) setTimeout(function(){showToast('👋 دیروز هم ثبت کردی! امروز هم ثبت کن.');},2000);
+  else setTimeout(function(){showToast('😅 چند روزی خبری نبود. بیا ثبت کن.');},2000);
+}
+
+/* MBTI data (abbreviated for length - same as previous) */
+var questions=[{q:"در یک مهمانی، معمولاً...",options:[{text:"با افراد جدید زیاد صحبت می‌کنم",dim:"E"},{text:"ترجیح می‌دهم با چند نفر آشنا صحبت کنم",dim:"I"}]},{q:"وقتی با یک مشکل روبه‌رو می‌شوی...",options:[{text:"اول به واقعیت‌ها نگاه می‌کنم",dim:"S"},{text:"به ایده‌های جدید فکر می‌کنم",dim:"N"}]},{q:"در تصمیم‌گیری، بیشتر...",options:[{text:"به منطق تکیه می‌کنم",dim:"T"},{text:"به احساسات توجه می‌کنم",dim:"F"}]},{q:"برنامه‌ریزی روزانه‌ات چطور است؟",options:[{text:"از قبل برنامه دارم",dim:"J"},{text:"انعطاف‌پذیر هستم",dim:"P"}]},{q:"بعد از یک روز شلوغ...",options:[{text:"با دوستان بیرون می‌روم",dim:"E"},{text:"تنها می‌مانم",dim:"I"}]},{q:"وقتی چیزی یاد می‌گیری...",options:[{text:"مثال‌های عملی می‌خواهم",dim:"S"},{text:"تصویر کلی می‌خواهم",dim:"N"}]},{q:"وقتی دوستت مشکل دارد...",options:[{text:"راه‌حل منطقی پیشنهاد می‌دهم",dim:"T"},{text:"همدلی می‌کنم",dim:"F"}]},{q:"کارهایت را معمولاً...",options:[{text:"قبل از موعد تمام می‌کنم",dim:"J"},{text:"نزدیک موعد انجام می‌دهم",dim:"P"}]},{q:"در جمع‌های جدید...",options:[{text:"زود گرم می‌گیرم",dim:"E"},{text:"کمی طول می‌کشد",dim:"I"}]},{q:"بیشتر به چه چیزی اعتماد داری؟",options:[{text:"داده‌ها و شواهد",dim:"S"},{text:"شهود درونی",dim:"N"}]},{q:"وقتی بحث پیش می‌آید...",options:[{text:"با منطق نظر خودم را ثابت می‌کنم",dim:"T"},{text:"فضای گفتگو را آرام نگه می‌دارم",dim:"F"}]},{q:"اتاق و وسایلت...",options:[{text:"مرتب و منظم است",dim:"J"},{text:"کمی به‌هم‌ریخته است",dim:"P"}]}];
+var typeDescriptions={"INTJ":{title:"معمار استراتژیک",desc:"مستقل، تحلیل‌گر و آینده‌نگر هستی."},"INTP":{title:"متفکر خلاق",desc:"کنجکاو و منطقی هستی."},"ENTJ":{title:"فرمانده",desc:"رهبری قوی و تصمیم‌گیری قاطع داری."},"ENTP":{title:"مناظره‌گر",desc:"نوآور و پرانرژی هستی."},"INFJ":{title:"مشاور بصیر",desc:"حساس، عمیق و الهام‌بخش هستی."},"INFP":{title:"میانجی",desc:"آرمان‌گرا و خلاق هستی."},"ENFJ":{title:"قهرمان",desc:"الهام‌بخش و همدل هستی."},"ENFP":{title:"ماجراجو",desc:"پرانرژی، خلاق و خوش‌بین هستی."},"ISTJ":{title:"بازرس",desc:"مسئولیت‌پذیر، منظم و قابل‌اعتماد هستی."},"ISFJ":{title:"مدافع",desc:"دلسوز و وفادار هستی."},"ESTJ":{title:"مدیر",desc:"سازمان‌یافته و عمل‌گرا هستی."},"ESFJ":{title:"پرستار",desc:"گرم، اجتماعی و مسئولیت‌پذیر هستی."},"ISTP":{title:"صنعت‌گر",desc:"ماهر، عملی و مستقل هستی."},"ISFP":{title:"هنرمند",desc:"خلاق، حساس و انعطاف‌پذیر هستی."},"ESTP":{title:"کارآفرین",desc:"پرانرژی، جسور و عمل‌گرا هستی."},"ESFP":{title:"سرگرم‌کننده",desc:"شاد، اجتماعی و خودجوش هستی."}};
+var mbtiFinanceAdvice={"INTJ":"تو برنامه‌ریز و استراتژیستی. بودجه ماهانه با دسته‌بندی دقیق برایت عالی است.","INTP":"تو تحلیل‌گری. دفترچه هزینه ساده با تحلیل هفتگی برایت مناسب است.","ENTJ":"تو هدف‌گرایی. اهداف بزرگ را به قدم‌های هفتگی تقسیم کن.","ENTP":"تو پویایی. چالش مالی ماهانه برایت هیجان‌انگیزتر است.","INFJ":"تو ارزش‌محوری. بودجه‌ات را با ارزش‌هایت هم‌خوان کن.","INFP":"تو آرمان‌گرایی. اهداف الهام‌بخش بگذار.","ENFJ":"تو همدلی. بخشی از بودجه را برای کمک کنار بگذار.","ENFP":"تو خودجوشی. بودجه هفتگی کوچک برایت بهتر است.","ISTJ":"تو منظمی. بودجه دقیق با دسته‌بندی کامل عالی است.","ISFJ":"تو دلسوزی. سهم ثابت برای خودت بگذار.","ESTJ":"تو عمل‌گرایی. بودجه با اهداف مشخص عالی است.","ESFJ":"تو اجتماعی. دسته جدا برای خرج اجتماعی بگذار.","ISTP":"تو مستقلی. ابزار ساده ثبت کافی است.","ISFP":"تو حساسی. بودجه برای لذت‌های کوچک بگذار.","ESTP":"تو جسوری. چالش پس‌انداز ۳۰ روزه امتحان کن.","ESFP":"تو شادی. بودجه هفتگی با پاداش برایت مناسب است."};
+var mentorData={dimensions:{"INTJ":{risk:70,discipline:90,spending:40,future:95,social:30,flexibility:50},"INTP":{risk:60,discipline:55,spending:50,future:80,social:35,flexibility:70},"ENTJ":{risk:85,discipline:85,spending:55,future:90,social:60,flexibility:45},"ENTP":{risk:80,discipline:45,spending:65,future:70,social:65,flexibility:80},"INFJ":{risk:40,discipline:75,spending:45,future:85,social:50,flexibility:55},"INFP":{risk:35,discipline:45,spending:50,future:75,social:40,flexibility:75},"ENFJ":{risk:55,discipline:70,spending:60,future:80,social:85,flexibility:55},"ENFP":{risk:65,discipline:35,spending:75,future:65,social:80,flexibility:85},"ISTJ":{risk:25,discipline:95,spending:30,future:80,social:30,flexibility:25},"ISFJ":{risk:20,discipline:85,spending:35,future:70,social:45,flexibility:30},"ESTJ":{risk:50,discipline:90,spending:45,future:75,social:55,flexibility:30},"ESFJ":{risk:35,discipline:75,spending:60,future:60,social:85,flexibility:35},"ISTP":{risk:60,discipline:50,spending:50,future:55,social:30,flexibility:75},"ISFP":{risk:45,discipline:40,spending:65,future:50,social:40,flexibility:85},"ESTP":{risk:90,discipline:35,spending:80,future:45,social:70,flexibility:80},"ESFP":{risk:75,discipline:25,spending:90,future:40,social:85,flexibility:90}},advice:{"INTJ":[{cat:"بودجه",text:"بودجه ماهانه با دسته‌بندی دقیق بساز."},{cat:"هدف",text:"اهداف بلندمدت تعریف کن."},{cat:"ریسک",text:"۱۰٪ سرمایه‌گذاری کن."},{cat:"عادت",text:"هر ماه کتاب اقتصادی بخوان."},{cat:"هشدار",text:"مراقب کمال‌گرایی باش."}],"INTP":[{cat:"بودجه",text:"دفترچه هزینه ساده."},{cat:"هدف",text:"اهداف کوتاه‌مدت."},{cat:"ریسک",text:"قبل از سرمایه‌گذاری تحقیق کن."},{cat:"عادت",text:"نمودار هفتگی بساز."},{cat:"هشدار",text:"مراقب تحلیل‌زدگی باش."}],"ENTJ":[{cat:"بودجه",text:"بودجه با اهداف مشخص."},{cat:"هدف",text:"اهداف را به قدم‌های هفتگی تقسیم کن."},{cat:"ریسک",text:"۲۰٪ سرمایه‌گذاری رشد."},{cat:"عادت",text:"جلسه مالی ماهانه."},{cat:"هشدار",text:"مراقب خرج نمایشی باش."}],"ENTP":[{cat:"بودجه",text:"چالش مالی ماهانه."},{cat:"هدف",text:"هر ماه هدف جدید."},{cat:"ریسک",text:"۷ روز صبر کن."},{cat:"عادت",text:"ایده مالی تست کن."},{cat:"هشدار",text:"مراقب خرید لحظه‌ای باش."}],"INFJ":[{cat:"بودجه",text:"بودجه هم‌خوان با ارزش‌ها."},{cat:"هدف",text:"اهداف معنادار."},{cat:"ریسک",text:"محافظه‌کارانه."},{cat:"عادت",text:"بازبینی ماهانه."},{cat:"هشدار",text:"مراقب خرج برای دیگران باش."}],"INFP":[{cat:"بودجه",text:"اهداف الهام‌بخش."},{cat:"هدف",text:"به آرزوها گره بزن."},{cat:"ریسک",text:"امن."},{cat:"عادت",text:"کار کوچک هفتگی."},{cat:"هشدار",text:"مراقب خرج احساسی باش."}],"ENFJ":[{cat:"بودجه",text:"دسته کمک و بخشش."},{cat:"هدف",text:"اهداف مشترک."},{cat:"ریسک",text:"متعادل."},{cat:"عادت",text:"صحبت با دوست."},{cat:"هشدار",text:"مراقب راضی نگه داشتن باش."}],"ENFP":[{cat:"بودجه",text:"بودجه هفتگی کوچک."},{cat:"هدف",text:"کوتاه و هیجان‌انگیز."},{cat:"ریسک",text:"۷ روز صبر."},{cat:"عادت",text:"ثبت روزانه."},{cat:"هشدار",text:"مراقب خرید هیجانی باش."}],"ISTJ":[{cat:"بودجه",text:"بودجه دقیق."},{cat:"هدف",text:"جدول زمانی مشخص."},{cat:"ریسک",text:"امن."},{cat:"عادت",text:"گزارش ماهانه."},{cat:"هشدار",text:"مراقب وسواس باش."}],"ISFJ":[{cat:"بودجه",text:"سهم برای خودت."},{cat:"هدف",text:"امنیت خانوادگی."},{cat:"ریسک",text:"محافظه‌کارانه."},{cat:"عادت",text:"بازبینی آرام."},{cat:"هشدار",text:"مراقب فراموش کردن خودت باش."}],"ESTJ":[{cat:"بودجه",text:"اهداف مشخص."},{cat:"هدف",text:"جدول زمانی."},{cat:"ریسک",text:"متعادل."},{cat:"عادت",text:"بازبینی هفتگی."},{cat:"هشدار",text:"مراقب کنترل‌گری باش."}],"ESFJ":[{cat:"بودجه",text:"دسته خرج اجتماعی."},{cat:"هدف",text:"اهداف خانوادگی."},{cat:"ریسک",text:"محافظه‌کارانه."},{cat:"عادت",text:"صحبت خانوادگی."},{cat:"هشدار",text:"مراقب جلب رضایت باش."}],"ISTP":[{cat:"بودجه",text:"ابزار ساده."},{cat:"هدف",text:"کوتاه و عملی."},{cat:"ریسک",text:"تا ۲۰٪."},{cat:"عادت",text:"تحلیل هفتگی."},{cat:"هشدار",text:"مراقب خرج ناگهانی باش."}],"ISFP":[{cat:"بودجه",text:"لذت‌های کوچک."},{cat:"هدف",text:"مرتبط با زیبایی."},{cat:"ریسک",text:"محافظه‌کارانه."},{cat:"عادت",text:"ثبت هفتگی."},{cat:"هشدار",text:"مراقب خرج احساسی باش."}],"ESTP":[{cat:"بودجه",text:"چالش ۳۰ روزه."},{cat:"هدف",text:"کوتاه با پاداش."},{cat:"ریسک",text:"با تحقیق."},{cat:"عادت",text:"چالش هفتگی."},{cat:"هشدار",text:"مراقب ریسک زیاد باش."}],"ESFP":[{cat:"بودجه",text:"بودجه هفتگی با پاداش."},{cat:"هدف",text:"لذت‌بخش."},{cat:"ریسک",text:"۱۴ روز صبر."},{cat:"عادت",text:"ثبت روزانه."},{cat:"هشدار",text:"مراقب خرج آنی باش."}]},quotes:[{text:"ثروت واقعی داشتن گزینه‌های زیاد است.",author:"مورگان هاوزل"},{text:"قدرت مالی توانایی کنترل زمان است.",author:"مورگان هاوزل"},{text:"آنچه را نمی‌توانی اندازه بگیری، نمی‌توانی مدیریت کنی.",author:"پیتر دراکر"},{text:"سرمایه‌گذاری موفق پرداخت قیمت مناسب است.",author:"بنجامین گراهام"},{text:"پول خوب پولی است که برایت کار کند.",author:"رابرت کیوساکی"}]};
+var personalityDatabase={"INTJ":{name:"معمار",group:"تحلیل‌گر",summary:"استراتژیست مستقل.",strengths:["برنامه‌ریزی","استقلال"],weaknesses:["کمال‌گرایی"]},"INTP":{name:"منطق‌دان",group:"تحلیل‌گر",summary:"متفکر کنجکاو.",strengths:["تحلیل","الگو"],weaknesses:["عدم پیگیری"]},"ENTJ":{name:"فرمانده",group:"تحلیل‌گر",summary:"رهبر قاطع.",strengths:["هدف‌گذاری","تصمیم"],weaknesses:["ریسک بالا"]},"ENTP":{name:"مناظره‌گر",group:"تحلیل‌گر",summary:"نوآور پرانرژی.",strengths:["ایده","انطباق"],weaknesses:["پراکندگی"]},"INFJ":{name:"حامی",group:"دیپلمات",summary:"آرمان‌گرای بصیر.",strengths:["همدلی","ارزش"],weaknesses:["خرج برای دیگران"]},"INFP":{name:"میانجی",group:"دیپلمات",summary:"شاعر آرمان‌گرا.",strengths:["خلاقیت","اصالت"],weaknesses:["فرار از واقعیت"]},"ENFJ":{name:"پروتاگونیست",group:"دیپلمات",summary:"رهبر الهام‌بخش.",strengths:["رهبری","همدلی"],weaknesses:["جلب رضایت"]},"ENFP":{name:"فعال",group:"دیپلمات",summary:"پرشور و اجتماعی.",strengths:["انرژی","خوش‌بینی"],weaknesses:["خرج لحظه‌ای"]},"ISTJ":{name:"لجستیک",group:"نگهبان",summary:"منظم و قابل‌اعتماد.",strengths:["نظم","اعتماد"],weaknesses:["وسواس"]},"ISFJ":{name:"مدافع",group:"نگهبان",summary:"فداکار و گرم.",strengths:["فداکاری","وفاداری"],weaknesses:["فراموش خود"]},"ESTJ":{name:"مدیر",group:"نگهبان",summary:"سازمان‌دهنده.",strengths:["سازماندهی","عمل"],weaknesses:["کنترل‌گری"]},"ESFJ":{name:"کنسول",group:"نگهبان",summary:"دلسوز اجتماعی.",strengths:["اجتماعی","همدلی"],weaknesses:["جلب توجه"]},"ISTP":{name:"ویرتوئوز",group:"کاوشگر",summary:"ماهر عملی.",strengths:["مهارت","استقلال"],weaknesses:["عدم برنامه"]},"ISFP":{name:"ماجراجو",group:"کاوشگر",summary:"هنرمند حساس.",strengths:["خلاقیت","حساسیت"],weaknesses:["خرج احساسی"]},"ESTP":{name:"کارآفرین",group:"کاوشگر",summary:"جسور پرانرژی.",strengths:["جسارت","انطباق"],weaknesses:["ریسک زیاد"]},"ESFP":{name:"سرگرم‌کننده",group:"کاوشگر",summary:"شاد خودجوش.",strengths:["شادی","لحظه"],weaknesses:["خرج آنی"]}};
+
+var mbtiIndex=0, mbtiScores={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+
+function startApp(){
+  var name=document.getElementById('input-name').value.trim(); if(!name){alert('اسمت را وارد کن');return;}
+  appData.name=name; appData.initialBalance=parseFloat(document.getElementById('input-init-balance').value)||0; saveData();
+  document.getElementById('user-badge').textContent=name; document.getElementById('screen-welcome').classList.add('hidden');
+  if(appData.mbtiType) enterDashboard(); else { document.getElementById('screen-mbti').classList.remove('hidden'); startMbti(); }
+}
+function startMbti(){ mbtiIndex=0; mbtiScores={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0}; showMbtiQuestion(); }
+function showMbtiQuestion(){
+  var q=questions[mbtiIndex]; document.getElementById('mbti-question').textContent=q.q;
+  document.getElementById('mbti-progress').style.width=((mbtiIndex/questions.length)*100)+'%';
+  var div=document.getElementById('mbti-options'); div.innerHTML='';
+  q.options.forEach(function(opt){ var btn=document.createElement('button'); btn.className='btn btn-secondary'; btn.style.textAlign='right'; btn.textContent=opt.text;
+    btn.onclick=function(){ mbtiScores[opt.dim]++; mbtiIndex++; if(mbtiIndex<questions.length) showMbtiQuestion(); else finishMbti(); }; div.appendChild(btn); });
+}
+function finishMbti(){
+  var type=(mbtiScores.E>=mbtiScores.I?'E':'I')+(mbtiScores.S>=mbtiScores.N?'S':'N')+(mbtiScores.T>=mbtiScores.F?'T':'F')+(mbtiScores.J>=mbtiScores.P?'J':'P');
+  appData.mbtiType=type; saveData(); document.getElementById('screen-mbti').classList.add('hidden'); document.getElementById('screen-mbti-result').classList.remove('hidden');
+  document.getElementById('mbti-type').textContent=type; document.getElementById('mbti-title').textContent=typeDescriptions[type].title; document.getElementById('mbti-desc').textContent=typeDescriptions[type].desc; renderTraits('mbti-traits',type);
+}
+function renderTraits(id,type){ var traits={E:"برون‌گرا",I:"درون‌گرا",S:"حسی",N:"شهودی",T:"فکری",F:"احساسی",J:"قضاوت‌گر",P:"ادراکی"}; var div=document.getElementById(id); div.innerHTML=''; type.split('').forEach(function(l){ var s=document.createElement('span'); s.className='trait-pill'; s.textContent=traits[l]; div.appendChild(s); }); }
+function enterDashboard(){ document.getElementById('screen-welcome').classList.add('hidden'); document.getElementById('screen-mbti').classList.add('hidden'); document.getElementById('screen-mbti-result').classList.add('hidden'); document.getElementById('screen-dashboard').classList.remove('hidden'); document.getElementById('user-badge').textContent=appData.name; document.getElementById('fab-btn').classList.remove('hidden'); checkStreak(); checkReminder(); populateCategorySelect(); processRecurring(); switchTab('home'); }
+function switchTab(tab){ document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');}); document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');}); var b=document.querySelector('.tab[data-tab="'+tab+'"]'); if(b) b.classList.add('active'); var e=document.getElementById('tab-'+tab); if(e) e.classList.add('active'); renderDashboard(); if(tab==='game'){initAmirGame();} }
+
+function getAllCategories(){ return defaultCategories.concat(appData.customCategories||[]); }
+function populateCategorySelect(){ var select=document.getElementById('trans-category'); if(!select) return; select.innerHTML=''; getAllCategories().forEach(function(cat){ var opt=document.createElement('option'); opt.value=cat.name; opt.textContent=cat.icon+' '+cat.name; select.appendChild(opt); }); }
+function addCustomCategory(){ if(!hasSilver()){alert('فقط در نقره‌یار و الماس‌یار');return;} var name=prompt('نام دسته:'); if(!name||!name.trim())return; var icon=prompt('ایموجی:','🏷️')||'🏷️'; appData.customCategories.push({name:name.trim(),icon:icon,type:'expense'}); saveData(); renderCustomCategories(); populateCategorySelect(); showToast('✅ اضافه شد'); }
+function renderCustomCategories(){ var div=document.getElementById('custom-categories-list'); if(!div)return; if(!appData.customCategories||!appData.customCategories.length){div.innerHTML='<div class="empty" style="padding:12px;">هنوز دسته سفارشی نداری</div>';return;} div.innerHTML=''; appData.customCategories.forEach(function(cat,i){ var el=document.createElement('div'); el.className='custom-cat-item'; el.innerHTML='<div style="display:flex;align-items:center;"><span class="custom-cat-icon">'+cat.icon+'</span><span>'+cat.name+'</span></div><button class="delete-btn" onclick="deleteCustomCategory('+i+')">×</button>'; div.appendChild(el); }); }
+function deleteCustomCategory(i){ if(confirm('حذف شود؟')){ appData.customCategories.splice(i,1); saveData(); renderCustomCategories(); populateCategorySelect(); showToast('🗑️ حذف شد'); } }
+
+function activatePlan(plan){ var label=plan==='silver'?'نقره‌یار':'الماس‌یار'; if(confirm('پلن «'+label+'» فعال شود؟\n(نسخه دمو)')){ appData.plan=plan; saveData(); showToast('✅ '+label+' فعال شد!'); renderDashboard(); } }
+function editInitialBalance(){ var val=prompt('موجودی اولیه:',appData.initialBalance||0); if(val===null)return; appData.initialBalance=parseFloat(val)||0; saveData(); renderDashboard(); showToast('✅ به‌روز شد'); }
+
+function addTransaction(){
+  var type=document.getElementById('trans-type').value, category=document.getElementById('trans-category').value, amount=parseFloat(document.getElementById('trans-amount').value);
+  if(!amount||amount<=0){alert('مبلغ معتبر');return;}
+  var now=new Date();
+  appData.transactions.push({id:Date.now(),type:type,category:category,amount:amount,date:now.toLocaleDateString('fa-IR'),month:now.getMonth(),year:now.getFullYear(),day:now.getDate()});
+  saveData(); document.getElementById('trans-amount').value=''; addPoints(5,'ثبت تراکنش'); checkBadge('first_trans'); renderDashboard(); showToast('✅ ثبت شد');
+}
+function deleteTransaction(id){ appData.transactions=appData.transactions.filter(function(t){return t.id!==id;}); saveData(); renderDashboard(); }
+function filterTransactions(){ var q=document.getElementById('search-transactions').value.trim().toLowerCase(); if(!q) return appData.transactions.slice().reverse(); return appData.transactions.filter(function(t){return t.category.toLowerCase().includes(q)||t.date.includes(q);}).reverse(); }
+function renderTransactions(id,list){ var div=document.getElementById(id); if(!div)return; if(!list.length){div.innerHTML='<div class="empty">تراکنشی یافت نشد</div>';return;} div.innerHTML=''; list.forEach(function(t){ var el=document.createElement('div'); el.className='transaction '+t.type; el.innerHTML='<div class="trans-info"><div class="trans-cat">'+t.category+'</div><div class="trans-date">'+t.date+'</div></div><div class="trans-amount">'+(t.type==='income'?'+':'-')+formatMoney(t.amount)+'</div><button class="delete-btn" onclick="deleteTransaction('+t.id+')">×</button>'; div.appendChild(el); }); }
+
+/* ===== CATEGORY BUDGETS (Silver+) ===== */
+function addCategoryBudget(){
+  if(!hasSilver()){ alert('بودجه دسته‌بندی‌شده فقط در نقره‌یار و الماس‌یار فعال است.'); return; }
+  var cats=getAllCategories().filter(function(c){return c.type==='expense';}).map(function(c){return c.name;});
+  var cat=prompt('نام دسته (مثلاً خوراک):\n'+cats.join('، '));
+  if(!cat||!cat.trim()) return;
+  var limit=prompt('سقف ماهانه این دسته (تومان):');
+  if(!limit) return; limit=parseFloat(limit);
+  if(!limit||limit<=0){ alert('مبلغ معتبر وارد کن'); return; }
+  appData.categoryBudgets[cat.trim()]=limit; saveData(); renderCategoryBudgets(); showToast('✅ سقف بودجه تنظیم شد');
+}
+function renderCategoryBudgets(){
+  var div=document.getElementById('category-budgets-section'); if(!div) return;
+  if(!hasSilver()){ div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">بودجه دسته‌بندی‌شده در <b>نقره‌یار</b> فعال می‌شود.<br>برای هر دسته سقف ماهانه تعریف کن و هشدار بگیر.</div></div>'; return; }
+  var keys=Object.keys(appData.categoryBudgets||{});
+  if(!keys.length){ div.innerHTML='<div class="empty" style="padding:16px;">هنوز سقفی تعریف نکردی. روی دکمه زیر بزن.</div>'; return; }
+  var now=new Date(), thisMonth=now.getMonth(), thisYear=now.getFullYear();
+  var spent={}; appData.transactions.forEach(function(t){ if(t.type==='expense'&&t.month===thisMonth&&t.year===thisYear) spent[t.category]=(spent[t.category]||0)+t.amount; });
+  div.innerHTML='';
+  keys.forEach(function(cat){
+    var limit=appData.categoryBudgets[cat], used=spent[cat]||0, pct=Math.min(100,(used/limit)*100);
+    var cls=pct>=90?'danger':(pct>=70?'warn':'ok');
+    var el=document.createElement('div'); el.className='budget-item';
+    el.innerHTML='<div class="budget-header"><div class="budget-cat">'+cat+'</div><div class="budget-limit">سقف: '+formatMoney(limit)+'</div></div><div class="budget-progress-track"><div class="budget-progress-fill '+cls+'" style="width:'+pct+'%"></div></div><div class="budget-meta"><span>'+formatMoney(used)+' خرج شده</span><span>'+Math.round(pct)+'٪</span></div><button class="delete-btn" style="margin-top:6px;" onclick="deleteCategoryBudget(\''+cat+'\')">حذف سقف</button>';
+    div.appendChild(el);
+  });
+}
+function deleteCategoryBudget(cat){ if(confirm('سقف «'+cat+'» حذف شود؟')){ delete appData.categoryBudgets[cat]; saveData(); renderCategoryBudgets(); showToast('حذف شد'); } }
+
+/* ===== RECURRING (Silver+) ===== */
+function addRecurring(){
+  if(!hasSilver()){ alert('تراکنش تکراری فقط در نقره‌یار و الماس‌یار فعال است.'); return; }
+  var name=prompt('نام (مثلاً حقوق / اجاره):'); if(!name||!name.trim()) return;
+  var type=prompt('نوع: income یا expense','expense'); if(type!=='income'&&type!=='expense') type='expense';
+  var category=prompt('دسته:','سایر')||'سایر';
+  var amount=prompt('مبلغ (تومان):'); if(!amount) return; amount=parseFloat(amount);
+  if(!amount||amount<=0){ alert('مبلغ معتبر'); return; }
+  appData.recurring.push({id:Date.now(), name:name.trim(), type:type, category:category, amount:amount, lastAdded:null});
+  saveData(); renderRecurring(); showToast('✅ تراکنش تکراری اضافه شد');
+}
+function renderRecurring(){
+  var div=document.getElementById('recurring-list'); if(!div) return;
+  if(!hasSilver()){ div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">تراکنش‌های تکراری در <b>نقره‌یار</b> فعال می‌شود.<br>حقوق، اجاره و اشتراک‌ها را یک‌بار تعریف کن.</div></div>'; return; }
+  if(!appData.recurring||!appData.recurring.length){ div.innerHTML='<div class="empty" style="padding:16px;">هنوز تراکنش تکراری نداری</div>'; return; }
+  div.innerHTML='';
+  appData.recurring.forEach(function(r,i){
+    var el=document.createElement('div'); el.className='recurring-item';
+    el.innerHTML='<div class="recurring-info"><div class="recurring-name">'+(r.type==='income'?'📈':'📉')+' '+r.name+'</div><div class="recurring-meta">'+r.category+' — '+formatMoney(r.amount)+'</div></div><div><button class="btn btn-small btn-secondary" onclick="applyRecurring('+i+')">ثبت این ماه</button> <button class="delete-btn" onclick="deleteRecurring('+i+')">×</button></div>';
+    div.appendChild(el);
+  });
+}
+function applyRecurring(i){
+  var r=appData.recurring[i]; if(!r) return;
+  var now=new Date();
+  appData.transactions.push({id:Date.now(), type:r.type, category:r.category, amount:r.amount, date:now.toLocaleDateString('fa-IR'), month:now.getMonth(), year:now.getFullYear(), day:now.getDate()});
+  r.lastAdded=now.toISOString().slice(0,7); saveData(); addPoints(5,'تراکنش تکراری'); renderDashboard(); showToast('✅ '+r.name+' ثبت شد');
+}
+function deleteRecurring(i){ if(confirm('حذف شود؟')){ appData.recurring.splice(i,1); saveData(); renderRecurring(); showToast('حذف شد'); } }
+function processRecurring(){ /* can auto-apply later if needed */ }
+
+/* ===== WEEKLY INSIGHT (Silver+) ===== */
+function renderWeeklyInsight(){
+  var div=document.getElementById('weekly-insight-section'); if(!div) return;
+  if(!hasSilver()){ div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">بینش هفتگی در <b>نقره‌یار</b> فعال می‌شود.</div></div>'; return; }
+  var now=new Date(), day=now.getDay(), diff=day===0?6:day-1; // start of week (Sat in Iran-ish, but use Mon for simplicity)
+  var start=new Date(now); start.setDate(now.getDate()-diff); start.setHours(0,0,0,0);
+  var weekExp=0, weekInc=0, weekCats={};
+  appData.transactions.forEach(function(t){
+    var d=new Date(t.year, t.month, t.day||1);
+    if(d>=start && d<=now){
+      if(t.type==='expense'){ weekExp+=t.amount; weekCats[t.category]=(weekCats[t.category]||0)+t.amount; }
+      else weekInc+=t.amount;
+    }
+  });
+  var html='';
+  if(weekExp===0&&weekInc===0){ html='<div class="empty">این هفته هنوز تراکنشی ثبت نکردی.</div>'; }
+  else {
+    html+='<div class="insight-box"><div class="insight-title">خلاصه این هفته</div><div class="insight-text">درآمد: <b>'+formatMoney(weekInc)+'</b> — هزینه: <b>'+formatMoney(weekExp)+'</b></div></div>';
+    var keys=Object.keys(weekCats);
+    if(keys.length){ var top=keys.reduce(function(a,b){return weekCats[a]>weekCats[b]?a:b;}); html+='<div class="insight-box"><div class="insight-title">بیشترین خرج هفته</div><div class="insight-text">دسته <b>'+top+'</b> با '+formatMoney(weekCats[top])+'</div></div>'; }
+  }
+  div.innerHTML=html;
+}
+
+/* ===== WEEKDAY ANALYSIS (Gold) ===== */
+function renderWeekdayAnalysis(){
+  var div=document.getElementById('weekday-analysis'); if(!div) return;
+  if(!hasGold()){ div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">تحلیل روزهای هفته در <b>الماس‌یار</b> فعال می‌شود.</div></div>'; return; }
+  var days=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+  var sums=[0,0,0,0,0,0,0];
+  appData.transactions.forEach(function(t){
+    if(t.type!=='expense') return;
+    var d=new Date(t.year, t.month, t.day||1);
+    sums[d.getDay()] += t.amount;
+  });
+  var max=Math.max.apply(null,sums)||1;
+  var html='';
+  days.forEach(function(name,i){
+    var pct=(sums[i]/max)*100;
+    html+='<div class="bar-row"><div class="bar-label">'+name+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div><div class="bar-amount">'+formatMoney(sums[i])+'</div></div>';
+  });
+  var maxIdx=sums.indexOf(Math.max.apply(null,sums));
+  if(sums[maxIdx]>0) html+='<div class="insight-box" style="margin-top:12px;"><div class="insight-text">بیشترین خرج معمولاً در روز <b>'+days[maxIdx]+'</b> اتفاق می‌افتد. مراقب این روز باش.</div></div>';
+  div.innerHTML=html||'<div class="empty">داده کافی نیست</div>';
+}
+
+function renderCategoryChart(){ var div=document.getElementById('category-chart'); if(!div)return; var cats={}; appData.transactions.forEach(function(t){if(t.type==='expense')cats[t.category]=(cats[t.category]||0)+t.amount;}); var keys=Object.keys(cats); if(!keys.length){div.innerHTML='<div class="empty">داده‌ای نیست</div>';return;} var max=Math.max.apply(null,keys.map(function(k){return cats[k];})); div.innerHTML=''; keys.forEach(function(k){ var pct=(cats[k]/max)*100; var row=document.createElement('div'); row.className='bar-row'; row.innerHTML='<div class="bar-label">'+k+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div><div class="bar-amount">'+formatMoney(cats[k])+'</div>'; div.appendChild(row); }); }
+var chartColors=['#6366f1','#f59e0b','#10b981','#ef4444','#8b5cf6','#06b6d4','#f97316','#ec4899'];
+function getCategoryColors(){ var cats={}; appData.transactions.forEach(function(t){if(t.type==='expense')cats[t.category]=(cats[t.category]||0)+t.amount;}); var sorted=Object.keys(cats).sort(function(a,b){return cats[b]-cats[a];}); var colorMap={}; sorted.forEach(function(cat,i){colorMap[cat]=chartColors[i%chartColors.length];}); return {data:cats,colors:colorMap,sorted:sorted}; }
+function renderReports(){
+  var chartDiv=document.getElementById('line-chart-container'), donutDiv=document.getElementById('donut-chart-container'), legendDiv=document.getElementById('donut-legend'), rankDiv=document.getElementById('ranking-list');
+  if(!chartDiv||!donutDiv) return;
+  if(!hasSilver()){ chartDiv.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">نمودار خطی در <b>نقره‌یار</b> فعال می‌شود.</div></div>'; donutDiv.style.background='none'; donutDiv.innerHTML=''; legendDiv.innerHTML=''; rankDiv.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">رتبه‌بندی در <b>نقره‌یار</b> فعال می‌شود.</div></div>'; return; }
+  var now=new Date(), daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(), dailyExp=Array(daysInMonth).fill(0);
+  appData.transactions.forEach(function(t){ if(t.type==='expense'&&t.month===now.getMonth()&&t.year===now.getFullYear()){ var day=t.day||1; if(day>0&&day<=daysInMonth) dailyExp[day-1]+=t.amount; } });
+  var maxExp=Math.max.apply(null,dailyExp)||1, svgW=300, svgH=110, pad=12;
+  var points=dailyExp.map(function(val,i){ var x=pad+(i/(daysInMonth-1||1))*(svgW-pad*2); var y=svgH-pad-(val/maxExp)*(svgH-pad*2); return x+','+y; }).join(' ');
+  chartDiv.innerHTML='<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;height:100%;overflow:visible;"><line x1="0" y1="'+(svgH-pad)+'" x2="'+svgW+'" y2="'+(svgH-pad)+'" stroke="var(--border)" stroke-width="1.5"/><polyline points="'+points+'" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>'+points.split(' ').map(function(p){var c=p.split(',');return '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="3.5" fill="var(--bg-card)" stroke="#f59e0b" stroke-width="2"/>';}).join('')+'</svg>';
+  var catData=getCategoryColors(), total=0; catData.sorted.forEach(function(c){total+=catData.data[c];});
+  if(total===0){ donutDiv.style.background='none'; donutDiv.innerHTML='<div class="empty" style="font-size:.75rem;padding-top:42px;">داده‌ای نیست</div>'; legendDiv.innerHTML=''; rankDiv.innerHTML='<div class="empty">داده‌ای نیست</div>'; return; }
+  var currentAngle=0, gradientStr=[]; donutDiv.innerHTML=''; legendDiv.innerHTML=''; rankDiv.innerHTML='';
+  catData.sorted.forEach(function(cat,i){ var pct=(catData.data[cat]/total)*100, color=catData.colors[cat]; gradientStr.push(color+' '+currentAngle+'% '+(currentAngle+pct)+'%'); currentAngle+=pct;
+    legendDiv.innerHTML+='<div><span style="display:inline-block;width:10px;height:10px;background:'+color+';border-radius:50%;margin-left:6px;"></span>'+cat+' ('+Math.round(pct)+'%)</div>';
+    rankDiv.innerHTML+='<div style="margin-bottom:14px;"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:5px;"><span style="font-weight:600;">'+(i+1)+'. '+cat+'</span><span style="font-weight:800;color:var(--danger);">-'+formatMoney(catData.data[cat])+'</span></div><div style="height:7px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:4px;"></div></div></div>'; });
+  donutDiv.style.background='conic-gradient('+gradientStr.join(', ')+')'; donutDiv.innerHTML='<div class="donut-inner">هزینه</div>';
+}
+function renderBarChart(){ var container=document.getElementById('bar-chart-container'); if(!container)return; if(!hasSilver()){ container.innerHTML='<div class="lock-overlay" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><div class="lock-text">نمودار ۶ ماهه در <b>نقره‌یار</b> فعال می‌شود.</div></div>'; return; } container.innerHTML=''; var months=[], now=new Date(); for(var i=5;i>=0;i--){ var d=new Date(now.getFullYear(),now.getMonth()-i,1); months.push({label:d.toLocaleDateString('fa-IR',{month:'short'}),year:d.getFullYear(),month:d.getMonth()}); } var totals=months.map(function(m){ var sum=0; appData.transactions.forEach(function(t){if(t.type==='expense'&&t.month===m.month&&t.year===m.year)sum+=t.amount;}); return sum; }); var max=Math.max.apply(null,totals)||1; months.forEach(function(m,i){ var val=totals[i], heightPct=(val/max)*100, isCurrent=(m.month===now.getMonth()&&m.year===now.getFullYear()); var bar=document.createElement('div'); bar.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;'; bar.innerHTML='<div style="font-size:.62rem;color:var(--text-secondary);margin-bottom:6px;opacity:'+(val>0?1:0)+';font-weight:600;">'+(val/1000).toFixed(0)+'k</div><div style="width:72%;background:'+(isCurrent?'#ef4444':'#f59e0b')+';height:'+heightPct+'%;border-radius:6px 6px 0 0;transition:height .5s;"></div><div style="position:absolute;bottom:-26px;font-size:.7rem;color:var(--text-secondary);font-weight:500;">'+m.label+'</div>'; container.appendChild(bar); }); }
+
+function addGoal(){ var name=document.getElementById('goal-name').value.trim(), target=parseFloat(document.getElementById('goal-target').value), saved=parseFloat(document.getElementById('goal-saved').value)||0; if(!name||!target||target<=0){alert('نام و مبلغ هدف را درست وارد کن');return;} if(!hasSilver()&&appData.goals.length>=2){alert('در نسخه رایگان فقط ۲ هدف مجاز است.');return;} appData.goals.push({id:Date.now(),name:name,target:target,saved:saved}); saveData(); document.getElementById('goal-name').value=''; document.getElementById('goal-target').value=''; document.getElementById('goal-saved').value=''; addPoints(15,'ساخت هدف'); renderDashboard(); showToast('✅ هدف اضافه شد'); }
+function deleteGoal(id){ appData.goals=appData.goals.filter(function(g){return g.id!==id;}); saveData(); renderDashboard(); }
+function editGoal(id){ var goal=appData.goals.find(function(g){return g.id===id;}); if(!goal)return; var n=prompt('نام:',goal.name); if(n===null)return; var t=prompt('مبلغ هدف:',goal.target); if(t===null)return; var s=prompt('پس‌انداز:',goal.saved); if(s===null)return; goal.name=n.trim(); goal.target=parseFloat(t); goal.saved=parseFloat(s)||0; if(!goal.name||!goal.target||goal.target<=0){alert('اطلاعات معتبر');return;} saveData(); renderDashboard(); showToast('✅ ویرایش شد'); }
+function quickAddSaved(id){ var goal=appData.goals.find(function(g){return g.id===id;}); if(!goal)return; var amount=prompt('مبلغ اضافه به «'+goal.name+'»:',''); if(amount===null)return; amount=parseFloat(amount); if(!amount||amount<=0){alert('مبلغ معتبر');return;} goal.saved+=amount; saveData(); if(goal.saved>=goal.target){addPoints(50,'هدف کامل شد!');checkBadge('saver');} else addPoints(10,'پیشرفت هدف'); renderDashboard(); showToast('✅ اضافه شد'); }
+function renderGoals(){ var div=document.getElementById('goals-list'); if(!div)return; if(!appData.goals.length){div.innerHTML='<div class="empty">هنوز هدفی نداری</div>';return;} div.innerHTML=''; appData.goals.forEach(function(g){ var pct=Math.min(100,(g.saved/g.target)*100); var el=document.createElement('div'); el.className='goal-item'; el.innerHTML='<div class="goal-header"><div class="goal-name">'+g.name+'</div><div><button class="delete-btn" onclick="editGoal('+g.id+')">✏️</button><button class="delete-btn" onclick="deleteGoal('+g.id+')">×</button></div></div><div class="goal-progress-track"><div class="goal-progress-fill" style="width:'+pct+'%"></div></div><div class="goal-meta"><span>'+formatMoney(g.saved)+' از '+formatMoney(g.target)+'</span><span>'+Math.round(pct)+'٪</span></div><div style="margin-top:12px;display:flex;gap:8px;"><button class="btn btn-secondary btn-small" style="flex:1;" onclick="quickAddSaved('+g.id+')">➕ افزودن پس‌انداز</button><button class="btn btn-secondary btn-small" style="flex:1;" onclick="editGoal('+g.id+')">✏️ ویرایش</button></div>'; div.appendChild(el); }); }
+
+function renderInsights(){
+  var div=document.getElementById('insight-section'); if(!div)return;
+  if(!hasSilver()){ div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">بینش هوشمند در <b>نقره‌یار</b> فعال می‌شود.</div></div>'; return; }
+  var now=new Date(), thisMonth=now.getMonth(), thisYear=now.getFullYear(), lastMonth=thisMonth===0?11:thisMonth-1, lastYear=thisMonth===0?thisYear-1:thisYear;
+  var thisExp=0, lastExp=0, thisCats={}, currentDay=now.getDate(), daysInMonth=new Date(thisYear,thisMonth+1,0).getDate();
+  appData.transactions.forEach(function(t){ if(t.type!=='expense')return; if(t.month===thisMonth&&t.year===thisYear){thisExp+=t.amount;thisCats[t.category]=(thisCats[t.category]||0)+t.amount;} if(t.month===lastMonth&&t.year===lastYear)lastExp+=t.amount; });
+  var html='';
+  if(thisExp===0&&lastExp===0){ html='<div class="empty">هنوز داده کافی نیست.</div>'; div.innerHTML=html; return; }
+  if(lastExp>0){ var diff=((thisExp-lastExp)/lastExp)*100; var boxClass=diff>0?'warning-box':'success-box', textClass=diff>0?'warning-text':'success-text'; html+='<div class="'+boxClass+'"><div class="'+textClass+'">'+(diff>0?'⚠️':'🎉')+' این ماه <b>'+Math.abs(diff).toFixed(0)+'٪</b> '+(diff>0?'بیشتر':'کمتر')+' از ماه قبل خرج کرده‌ای.</div></div>'; }
+  else html+='<div class="insight-box"><div class="insight-text">این اولین ماه ثبت هزینه‌های توست.</div></div>';
+  var catKeys=Object.keys(thisCats); if(catKeys.length){ var top=catKeys.reduce(function(a,b){return thisCats[a]>thisCats[b]?a:b;}); html+='<div class="insight-box"><div class="insight-title">بزرگ‌ترین دسته</div><div class="insight-text">دسته <b>'+top+'</b> با '+((thisCats[top]/thisExp)*100).toFixed(0)+'٪ ('+formatMoney(thisCats[top])+')</div></div>'; }
+  if(thisExp>0&&currentDay>=3){ var pred=(thisExp/currentDay)*daysInMonth; html+='<div class="insight-box"><div class="insight-title">🔮 پیش‌بینی</div><div class="insight-text">تا پایان ماه حدود <b>'+formatMoney(pred)+'</b> هزینه می‌کنی.</div></div>'; }
+  // Gold smart report addition
+  if(hasGold() && appData.mbtiType){ html+='<div class="insight-box"><div class="insight-title">🧠 گزارش هوشمند ماهانه</div><div class="insight-text">'+(mbtiFinanceAdvice[appData.mbtiType]||'')+' بر اساس الگوی فعلی‌ات، تمرکز روی کنترل دسته پرتکرار و پیشرفت اهداف می‌تونه کمکت کنه.</div></div>'; }
+  div.innerHTML=html;
+}
+
+function renderOverspend(){
+  var div=document.getElementById('overspend-section'); if(!div)return;
+  if(!hasGold()){ div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">هشدار هوشمند در <b>الماس‌یار</b> فعال می‌شود.</div></div>'; return; }
+  var now=new Date(), thisExp=0;
+  appData.transactions.forEach(function(t){ if(t.type==='expense'&&t.month===now.getMonth()&&t.year===now.getFullYear()) thisExp+=t.amount; });
+  var limit=5000000;
+  // smarter: also check category budgets
+  var alerts=[];
+  if(thisExp>limit) alerts.push('هزینه کل این ماه از سقف ۵ میلیون عبور کرده.');
+  Object.keys(appData.categoryBudgets||{}).forEach(function(cat){
+    var used=0; appData.transactions.forEach(function(t){ if(t.type==='expense'&&t.category===cat&&t.month===now.getMonth()&&t.year===now.getFullYear()) used+=t.amount; });
+    if(used >= appData.categoryBudgets[cat]*0.9) alerts.push('دسته «'+cat+'» به ۹۰٪ سقف نزدیک شده یا رد کرده.');
+  });
+  if(alerts.length){ div.innerHTML='<div class="warning-box"><div class="warning-text">⚠️ '+alerts.join('<br>')+'</div></div>'; }
+  else div.innerHTML='<div class="success-box"><div class="success-text">✅ هنوز وضعیت هزینه‌ها تحت کنترل است. خوب پیش می‌روی!</div></div>';
+}
+
+function renderMbtiFinance(){ var div=document.getElementById('mbti-finance-section'); if(!div)return; if(!hasGold()){div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">این بخش در <b>الماس‌یار</b> فعال می‌شود.</div></div>';return;} if(!appData.mbtiType){div.innerHTML='<div class="empty">اول تست MBTI را کامل کن</div>';return;} div.innerHTML='<div class="insight-box"><div class="insight-title">🧠 توصیه برای '+appData.mbtiType+'</div><div class="insight-text">'+(mbtiFinanceAdvice[appData.mbtiType]||'')+'</div></div>'; }
+function renderMentor(){
+  var div=document.getElementById('mentor-section'); if(!div)return;
+  if(!hasSilver()){div.innerHTML='<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-text">مربی مالی در <b>نقره‌یار</b> فعال می‌شود.</div></div>';return;}
+  if(!appData.mbtiType){div.innerHTML='<div class="empty">اول تست MBTI را کامل کن</div>';return;}
+  var type=appData.mbtiType, dims=mentorData.dimensions[type], advice=mentorData.advice[type]||[], persona=personalityDatabase[type];
+  var dimNames={risk:"ریسک‌پذیری",discipline:"نظم",spending:"ولخرجی",future:"آینده‌نگری",social:"اجتماعی بودن",flexibility:"انعطاف"};
+  var isGold=hasGold(), html='';
+  if(persona){ html+='<div class="insight-box" style="margin-bottom:20px;"><div class="insight-title">'+persona.name+' ('+persona.group+')</div><div class="insight-text" style="margin-bottom:12px;">'+persona.summary+'</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><div style="flex:1;min-width:140px;background:rgba(16,185,129,.1);padding:12px;border-radius:10px;font-size:.8rem;"><b>نقاط قوت:</b> '+persona.strengths.join('، ')+'</div><div style="flex:1;min-width:140px;background:rgba(239,68,68,.1);padding:12px;border-radius:10px;font-size:.8rem;"><b>چالش‌ها:</b> '+persona.weaknesses.join('، ')+'</div></div></div>'; }
+  html+='<div style="margin-bottom:20px;"><div class="insight-title" style="margin-bottom:12px;">📊 تحلیل ۶ بُعدی</div>'; Object.keys(dims).forEach(function(k){ html+='<div class="bar-row"><div class="bar-label">'+dimNames[k]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+dims[k]+'%"></div></div><div class="bar-amount">'+dims[k]+'</div></div>'; }); html+='</div>';
+  var adviceToShow=isGold?advice:advice.slice(0,2);
+  html+='<div style="margin-bottom:20px;"><div class="insight-title" style="margin-bottom:12px;">💡 توصیه‌ها</div><div style="overflow-x:auto;"><table class="mentor-table"><thead><tr><th>دسته</th><th>توصیه</th></tr></thead><tbody>'; adviceToShow.forEach(function(a){html+='<tr><td class="mentor-cat">'+a.cat+'</td><td>'+a.text+'</td></tr>';}); html+='</tbody></table></div>';
+  if(!isGold) html+='<div class="lock-overlay" style="margin-top:12px;"><div class="lock-icon">🔒</div><div class="lock-text">'+(advice.length-2)+' توصیه دیگر در الماس‌یار</div></div>'; html+='</div>';
+  var quotes=isGold?mentorData.quotes:mentorData.quotes.slice(0,1);
+  html+='<div><div class="insight-title" style="margin-bottom:12px;">📚 نقل‌قول‌ها</div>'; quotes.forEach(function(q){html+='<div class="insight-box" style="margin-bottom:10px;"><div class="insight-text" style="font-style:italic;">«'+q.text+'»</div><div style="font-size:.75rem;color:var(--text-secondary);margin-top:6px;text-align:left;">— '+q.author+'</div></div>';}); if(!isGold) html+='<div class="lock-overlay" style="margin-top:12px;"><div class="lock-icon">🔒</div><div class="lock-text">نقل‌قول‌های بیشتر در الماس‌یار</div></div>'; html+='</div>';
+  div.innerHTML=html;
+}
+
+function shareReport(){ if(!hasSilver()){alert('فقط در نقره‌یار و الماس‌یار');return;} var income=0,expense=0; appData.transactions.forEach(function(t){if(t.type==='income')income+=t.amount;else expense+=t.amount;}); var text=`📊 خلاصه مالی من در «یار»\n\n👤 ${appData.name}\n🧠 تیپ: ${appData.mbtiType}\n🔥 استریک: ${appData.streak} روز\n🏅 سطح: ${appData.level}\n\n📈 درآمد: ${formatMoney(income)}\n📉 هزینه: ${formatMoney(expense)}\n💰 موجودی: ${formatMoney((appData.initialBalance||0)+income-expense)}\n\nبا یار هوشمندانه‌تر خرج کن! 🚀`; if(navigator.share) navigator.share({title:'خلاصه مالی یار',text:text}).catch(console.error); else navigator.clipboard.writeText(text).then(function(){showToast('📋 کپی شد!');}).catch(function(){alert(text);}); }
+
+function openShareCard(){ var income=0,expense=0; appData.transactions.forEach(function(t){if(t.type==='income')income+=t.amount;else expense+=t.amount;}); var bal=(appData.initialBalance||0)+income-expense; document.getElementById('share-name').textContent=appData.name||'کاربر یار'; document.getElementById('share-mbti').textContent='تیپ: '+(appData.mbtiType||'—')+' | سطح '+appData.level; document.getElementById('share-income').textContent=Number(income).toLocaleString('fa-IR'); document.getElementById('share-expense').textContent=Number(expense).toLocaleString('fa-IR'); document.getElementById('share-balance').textContent=Number(bal).toLocaleString('fa-IR'); document.getElementById('share-streak').textContent=appData.streak+' روز'; var insight='با یار هوشمندانه‌تر خرج کن ✨'; if(appData.mbtiType&&typeDescriptions[appData.mbtiType]) insight=typeDescriptions[appData.mbtiType].title+' — '+(mbtiFinanceAdvice[appData.mbtiType]||'').slice(0,55)+'...'; document.getElementById('share-insight').textContent=insight; document.getElementById('share-modal').classList.add('active'); }
+function closeShareCard(){ document.getElementById('share-modal').classList.remove('active'); }
+function downloadShareCard(){ var card=document.getElementById('share-card-content'); html2canvas(card,{scale:2,useCORS:true,backgroundColor:null}).then(function(canvas){ var link=document.createElement('a'); link.download='yar-summary-'+(appData.name||'user')+'.png'; link.href=canvas.toDataURL('image/png'); link.click(); showToast('📷 تصویر دانلود شد!'); }).catch(function(){showToast('خطا در ساخت تصویر');}); }
+
+function renderDashboard(){
+  if(!appData.name) return;
+  var income=0,expense=0; appData.transactions.forEach(function(t){if(t.type==='income')income+=t.amount;else expense+=t.amount;});
+  var hi=document.getElementById('home-income'); if(hi) hi.textContent=formatMoney(income);
+  var he=document.getElementById('home-expense'); if(he) he.textContent=formatMoney(expense);
+  var hb=document.getElementById('home-balance'); if(hb) hb.textContent=formatMoney((appData.initialBalance||0)+income-expense);
+  renderTransactions('home-transactions', appData.transactions.slice(-5).reverse());
+  renderTransactions('all-transactions', filterTransactions());
+  renderCategoryChart(); renderGoals(); renderInsights(); renderWeeklyInsight(); renderOverspend();
+  renderMbtiFinance(); renderMentor(); renderReports(); renderBarChart(); renderWeekdayAnalysis();
+  renderProfile(); renderDeepMbtiProfile(); renderCustomCategories(); renderPlanStatus(); renderChallenges();
+  renderCategoryBudgets(); renderRecurring();
+}
+function renderProfile(){ if(!appData.mbtiType)return; var t=appData.mbtiType; document.getElementById('profile-type').textContent=t; document.getElementById('profile-title').textContent=typeDescriptions[t].title; document.getElementById('profile-desc').textContent=typeDescriptions[t].desc; renderTraits('profile-traits',t); }
+function renderDeepMbtiProfile(){
+ var box=document.getElementById('mbti-deep-profile'); if(!box||!appData.mbtiType)return;
+ var t=appData.mbtiType, d=typeDescriptions[t]||{}, advice=mbtiFinanceAdvice[t]||'برای شناخت بهتر الگوی مالی‌ات، هزینه‌هایت را چند هفته ثبت کن.';
+ var axes={E:'انرژی اجتماعی و تعامل با دیگران',I:'تمرکز و بازیابی انرژی در خلوت',S:'توجه به واقعیت‌ها و جزئیات ملموس',N:'توجه به الگوها و احتمال‌های آینده',T:'تصمیم‌گیری با تحلیل منطقی',F:'توجه به ارزش‌ها و اثر تصمیم بر دیگران',J:'ترجیح برنامه و ساختار',P:'ترجیح انعطاف و باز گذاشتن گزینه‌ها'};
+ var explain={E:'ممکن است در تصمیم‌های مالی از گفت‌وگو و تجربه جمعی انرژی بگیری.',I:'ممکن است ترجیح بدهی پیش از تصمیم مالی، مستقل و در آرامش فکر کنی.',S:'ممکن است با عددهای روشن، بودجه مشخص و قدم‌های عملی راحت‌تر باشی.',N:'ممکن است از دیدن تصویر بزرگ و هدف‌های بلندمدت انگیزه بگیری.',T:'ممکن است مقایسه هزینه و فایده به تصمیم‌گیری‌ات کمک کند.',F:'ممکن است ارزش‌های شخصی و نیاز اطرافیان در انتخاب‌های مالی‌ات اثرگذار باشند.',J:'ممکن است برنامه مکتوب و موعدهای مشخص به مدیریت پولت کمک کنند.',P:'ممکن است بودجه منعطف با فضای انتخاب، برایت قابل‌اجراتر باشد.'};
+ var rows=t.split('').map(function(ch){return '<li style="margin:5px 0"><b>'+ch+' — '+axes[ch]+'</b><br>'+explain[ch]+'</li>';}).join('');
+ box.innerHTML='<p><b>نمای کلی:</b> '+(d.desc||'')+'</p><p><b>چهار بُعد تیپ تو:</b></p><ul style="padding-right:20px">'+rows+'</ul><p><b>الگوی مالی احتمالی:</b> '+advice+'</p><p><b>نقطه قوتی که می‌توانی تقویت کنی:</b> رفتارهای سازگار با برنامه‌ریزی و پیگیری هدف‌ها را به عادت کوچک هفتگی تبدیل کن.</p><p><b>چالشی که بهتر است مراقبش باشی:</b> تصمیم‌های عجولانه یا تعویق تصمیم‌ها را با ثبت خریدها و مرور هفتگی کنترل کن.</p><p><b>تمرین هفت‌روزه:</b> هر روز هزینه‌هایت را ثبت کن؛ در پایان هفته سه خرج ضروری، سه خرج قابل‌کاهش و یک هدف پس‌انداز واقع‌بینانه مشخص کن.</p><p style="font-size:.78rem">توجه: MBTI ابزار خودشناسی است و به‌تنهایی رفتار مالی، توانایی یا آینده افراد را تعیین نمی‌کند. این توضیحات فرضیه‌هایی برای خوداندیشی‌اند، نه تشخیص علمی یا توصیه قطعی.</p>';
+}
+
+function renderPlanStatus(){ var nameEl=document.getElementById('current-plan-name'); if(!nameEl)return; var labels={free:'یار (رایگان)',silver:'🥈 نقره‌یار',gold:'🥇 الماس‌یار'}; nameEl.textContent=labels[appData.plan]||'یار (رایگان)'; var silverCard=document.getElementById('plan-silver-card'), goldCard=document.getElementById('plan-gold-card'), btnSilver=document.getElementById('btn-silver'), btnGold=document.getElementById('btn-gold'); if(!silverCard)return; silverCard.classList.remove('active-plan'); goldCard.classList.remove('active-plan'); if(appData.plan==='silver'){silverCard.classList.add('active-plan');btnSilver.textContent='✅ پلن فعال';btnSilver.disabled=true;}else{btnSilver.textContent='فعال‌سازی نقره‌یار';btnSilver.disabled=false;} if(appData.plan==='gold'){goldCard.classList.add('active-plan');btnGold.textContent='✅ پلن فعال';btnGold.disabled=true;}else{btnGold.textContent='فعال‌سازی الماس‌یار';btnGold.disabled=false;} }
+function retakeMbti(){ appData.mbtiType=null; saveData(); document.getElementById('screen-dashboard').classList.add('hidden'); document.getElementById('screen-mbti').classList.remove('hidden'); startMbti(); }
+
+var quickType='expense', quickCategory='خوراک';
+function openQuickSheet(){ document.getElementById('sheet-overlay').classList.add('active'); document.getElementById('quick-sheet').classList.add('active'); document.getElementById('quick-amount').value=''; setQuickType('expense'); setTimeout(function(){document.getElementById('quick-amount').focus();},320); }
+function closeQuickSheet(){ document.getElementById('sheet-overlay').classList.remove('active'); document.getElementById('quick-sheet').classList.remove('active'); }
+function setQuickType(type){ quickType=type; var be=document.getElementById('type-expense'), bi=document.getElementById('type-income'); if(type==='expense'){be.classList.add('active','expense-active');bi.classList.remove('active','income-active');}else{bi.classList.add('active','income-active');be.classList.remove('active','expense-active');} renderQuickCategories(); }
+function renderQuickCategories(){ var container=document.getElementById('quick-categories'); container.innerHTML=''; var cats=getAllCategories().filter(function(c){return c.type===quickType;}); if(!cats.some(function(c){return c.name===quickCategory;})) quickCategory=cats.length?cats[0].name:'سایر'; cats.forEach(function(cat){ var btn=document.createElement('button'); btn.className='category-btn'+(cat.name===quickCategory?' active':''); btn.innerHTML='<span class="cat-icon">'+cat.icon+'</span><span>'+cat.name+'</span>'; btn.onclick=function(){quickCategory=cat.name;renderQuickCategories();}; container.appendChild(btn); }); }
+function submitQuickTransaction(){ var amount=parseFloat(document.getElementById('quick-amount').value); if(!amount||amount<=0){alert('مبلغ معتبر');return;} var now=new Date(); appData.transactions.push({id:Date.now(),type:quickType,category:quickCategory,amount:amount,date:now.toLocaleDateString('fa-IR'),month:now.getMonth(),year:now.getFullYear(),day:now.getDate()}); saveData(); addPoints(5,'ثبت سریع'); checkBadge('first_trans'); renderDashboard(); closeQuickSheet(); if(navigator.vibrate) navigator.vibrate(40); showToast('✅ ثبت شد'); }
+
+
+// ===== Pixel Runner Game =====
+var amirGame={running:false,paused:false,raf:0,last:0,distance:0,speed:245,playerY:0,vy:0,onGround:true,obstacles:[],coins:[],spawn:0,coinSpawn:0,frame:0,canvas:null,ctx:null,ground:350,awarded:0,world:0,magnetTimer:0,jumpsUsed:0,missileCooldown:0,missileArmed:false,missiles:[],speechTimer:0};
+var gameSkins=[
+ {id:'amir',name:'امیر',cost:0,desc:'کت طوسی؛ شخصیت پایه',kind:'amir',ability:'بدون قدرت ویژه'},
+ {id:'mehrdad',name:'مهرداد',cost:200,desc:'🧲 آهنربای سکه؛ فعال‌سازی ۵ ثانیه‌ای',kind:'mehrdad',ability:'magnet'},
+ {id:'shahram',name:'شهرام',cost:400,desc:'💙 چشم‌های آبی؛ پرش دوبل',kind:'shahram',ability:'double'},
+ {id:'rostam',name:'رستم',cost:600,desc:'🚀 موشک‌انداز؛ دو ضربه، هر ۱۰ ثانیه',kind:'rostam',ability:'missile'},
+ {id:'fereydoon',name:'فریدون',cost:0,desc:'🔒 شخصیت ویژه اشتراک نقره‌یار و الماس‌یار',kind:'fereydoon',plan:true},
+ {id:'doctor',name:'دکتر بی‌غم',cost:0,desc:'🔒 شخصیت ویژه اشتراک نقره‌یار و الماس‌یار',kind:'doctor',plan:true}
+];
+function gameFa(n){return Math.floor(n).toLocaleString('fa-IR');}
+function initAmirGame(){var c=document.getElementById('runner-canvas');if(!c)return;amirGame.canvas=c;amirGame.ctx=c.getContext('2d');c.onclick=function(){if(amirGame.running)handleGameTap();};renderGameShop();updateGameStats();drawAmirGame();}
+function updateGameStats(){var d=document.getElementById('game-distance'),p=document.getElementById('game-points'),b=document.getElementById('game-best'),sp=document.getElementById('game-shop-points'),co=document.getElementById('game-coins');if(d)d.textContent=gameFa(amirGame.distance);if(p)p.textContent=gameFa(appData.gamePoints||0);if(b)b.textContent=gameFa(appData.gameBest||0);if(sp)sp.textContent=gameFa(appData.gamePoints||0);if(co)co.textContent=gameFa(appData.gameCoins||0);var ab=document.getElementById('game-ability-btn'),id=appData.gameCharacter||'amir';if(ab){if(id==='mehrdad'){ab.style.display='inline-flex';ab.textContent=amirGame.magnetTimer>0?'🧲 آهنربا فعال':'🧲 آهنربای سکه';ab.disabled=amirGame.magnetTimer>0;}else if(id==='rostam'){ab.style.display='inline-flex';ab.textContent=amirGame.missileCooldown>0?'🚀 شارژ موشک: '+gameFa(Math.ceil(amirGame.missileCooldown))+' ثانیه':'🚀 پرتاب موشک';ab.disabled=amirGame.missileCooldown>0;}else ab.style.display='none';}}
+function renderGameShop(){var box=document.getElementById('game-shop-grid');if(!box)return;box.innerHTML='';gameSkins.forEach(function(sk){var planOk=!sk.plan||appData.plan==='silver'||appData.plan==='gold',unlocked=sk.plan?planOk:(appData.gameUnlocked||['amir']).includes(sk.id),selected=appData.gameCharacter===sk.id;var el=document.createElement('div');el.className='game-character'+(selected?' selected':'');var avatar=document.createElement('div');avatar.className='game-avatar';var mini=document.createElement('canvas');mini.width=96;mini.height=100;avatar.appendChild(mini);drawPixelPerson(mini.getContext('2d'),18,8,sk.id,0,1.25);el.appendChild(avatar);var name=document.createElement('b');name.textContent=sk.name;el.appendChild(name);var desc=document.createElement('small');desc.textContent=(sk.id==='fereydoon'||sk.id==='doctor')?'':sk.desc;el.appendChild(desc);var btn=document.createElement('button');btn.disabled=selected;btn.textContent=selected?'✓ انتخاب شده':sk.plan?(planOk?'انتخاب':'🔒 اشتراک نقره‌یار یا الماس‌یار'):(unlocked?'انتخاب':'🔒 '+gameFa(sk.cost)+' امتیاز');btn.onclick=function(){if(sk.plan&&!planOk){showToast('برای این شخصیت اشتراک نقره‌یار یا الماس‌یار لازم است');return;}unlocked?selectGameSkin(sk.id):buyGameSkin(sk.id);};el.appendChild(btn);box.appendChild(el);});}
+function selectGameSkin(id){var sk=gameSkins.find(function(x){return x.id===id;});if(sk&&sk.plan&&appData.plan!=='silver'&&appData.plan!=='gold'){showToast('برای این شخصیت اشتراک نقره‌یار یا الماس‌یار لازم است');return;}if(!sk||(!sk.plan&&!(appData.gameUnlocked||[]).includes(id)))return;appData.gameCharacter=id;saveData();renderGameShop();drawAmirGame();updateGameStats();showToast('شخصیت '+(gameSkins.find(function(s){return s.id===id;})||{}).name+' انتخاب شد');}
+function useGameAbility(){var id=appData.gameCharacter||'amir';if(!amirGame.running){showToast('اول بازی را شروع کن');return;}if(id==='mehrdad'){if(amirGame.magnetTimer>0)return;amirGame.magnetTimer=5;updateGameStats();showToast('🧲 آهنربا برای ۵ ثانیه فعال شد!');return;}if(id==='rostam'){if(amirGame.missileCooldown>0)return;var target=amirGame.obstacles.filter(function(o){return o.x>145;}).sort(function(a,b){return a.x-b.x;})[0]||null;amirGame.missiles.push({x:165,y:amirGame.ground-57,target:target,age:0,hit:false});amirGame.missileCooldown=10;updateGameStats();showToast('🚀 موشک شلیک شد!');return;}showToast('این شخصیت قدرت فعال‌کردنی ندارد');}
+function buyGameSkin(id){var sk=gameSkins.find(function(x){return x.id===id;});if(!sk)return;if((appData.gameUnlocked||[]).includes(id)){selectGameSkin(id);return;}if((appData.gamePoints||0)<sk.cost){showToast('امتیاز کافی نداری؛ '+gameFa(sk.cost-(appData.gamePoints||0))+' امتیاز دیگر لازم داری');return;}if(!confirm('شخصیت «'+sk.name+'» با '+gameFa(sk.cost)+' امتیاز آزاد شود؟'))return;appData.gamePoints-=sk.cost;appData.gameUnlocked.push(id);appData.gameCharacter=id;saveData();renderGameShop();updateGameStats();drawAmirGame();showToast('🎉 شخصیت '+sk.name+' آزاد شد!');}
+function startAmirGame(){var ov=document.getElementById('game-overlay');if(ov)ov.style.display='none';if(!amirGame.canvas)initAmirGame();if(amirGame.running)return;amirGame.running=true;amirGame.paused=false;amirGame.last=0;amirGame.spawn=.8;amirGame.coinSpawn=1.1;amirGame.obstacles=[];amirGame.coins=[];amirGame.distance=0;amirGame.awarded=0;amirGame.speed=245;amirGame.playerY=0;amirGame.vy=0;amirGame.onGround=true;amirGame.world=0;amirGame.magnetTimer=0;amirGame.jumpsUsed=0;amirGame.missileCooldown=0;amirGame.missileArmed=false;amirGame.missiles=[];amirGame.speechTimer=0;updateGameStats();cancelAnimationFrame(amirGame.raf);if((appData.gameCharacter||'amir')==='fereydoon'){drawAmirGame();}else{amirGame.raf=requestAnimationFrame(gameLoop);}}
+function pauseAmirGame(){if(!amirGame.running)return;amirGame.running=false;amirGame.paused=true;cancelAnimationFrame(amirGame.raf);showGameOverlay('بازی متوقف شد','هر وقت آماده بودی ادامه بده. رکورد و امتیازهای گرفته‌شده ذخیره شده‌اند.','ادامه بازی');var ov=document.getElementById('game-overlay');if(ov)ov.querySelector('button').onclick=resumeAmirGame;}
+function resumeAmirGame(){var ov=document.getElementById('game-overlay');if(ov)ov.style.display='none';if(amirGame.running)return;amirGame.running=true;amirGame.paused=false;amirGame.last=0;if((appData.gameCharacter||'amir')==='fereydoon'){drawAmirGame();}else{amirGame.raf=requestAnimationFrame(gameLoop);}}
+function showGameOverlay(title,msg,button){var ov=document.getElementById('game-overlay');if(!ov)return;ov.style.display='flex';document.getElementById('game-overlay-title').textContent=title;document.getElementById('game-overlay-text').textContent=msg;var b=ov.querySelector('button');b.textContent=button||'شروع دوباره';b.onclick=startAmirGame;}
+function handleGameTap(){jumpAmir();}
+function jumpAmir(){if(!amirGame.running||(appData.gameCharacter||'amir')==='fereydoon')return;var isShahram=(appData.gameCharacter||'amir')==='shahram';if(amirGame.onGround){amirGame.vy=-690;amirGame.onGround=false;amirGame.jumpsUsed=1;}else if(isShahram&&amirGame.jumpsUsed<2){amirGame.vy=-650;amirGame.jumpsUsed=2;showToast('💙 پرش دوم!');}else{return;}if(navigator.vibrate)navigator.vibrate(18);}
+function gameLoop(ts){if(!amirGame.running)return;if(!amirGame.last)amirGame.last=ts;var dt=Math.min((ts-amirGame.last)/1000,.032);amirGame.last=ts;updateAmirGame(dt);drawAmirGame();amirGame.raf=requestAnimationFrame(gameLoop);}
+function updateAmirGame(dt){var g=amirGame;if((appData.gameCharacter||'amir')==='fereydoon'){g.frame=0;g.speed=0;g.world=0;g.distance=0;g.playerY=0;g.vy=0;g.onGround=true;g.obstacles=[];g.coins=[];g.missiles=[];g.magnetTimer=0;return;}g.frame+=dt;
+ // سرعت به‌تدریج با طی مسافت بیشتر می‌شود و فاصله موانع هم کمتر می‌شود.
+ g.speed=Math.min(620,245+g.distance*.11);g.world+=g.speed*dt;g.distance+=g.speed*dt*.038;g.missileCooldown=Math.max(0,g.missileCooldown-dt);
+ g.vy+=1750*dt;g.playerY+=g.vy*dt;if(g.playerY>=0){g.playerY=0;g.vy=0;g.onGround=true;g.jumpsUsed=0;}if(g.magnetTimer>0){g.magnetTimer=Math.max(0,g.magnetTimer-dt);if(g.magnetTimer===0)updateGameStats();}
+ if((appData.gameCharacter||'amir')==='doctor'){g.obstacles=[];g.spawn=1;}else{g.spawn-=dt;if(g.spawn<=0){var kind=Math.random()<.25?'spikes':'crate';g.obstacles.push({x:850,w:kind==='crate'?43:58,h:kind==='crate'?43:32,kind:kind});g.spawn=Math.max(.55,1.65+Math.random()*.65-g.distance*.00125);}}
+ g.coinSpawn-=dt;if(g.coinSpawn<=0){g.coins.push({x:850,y:205+Math.random()*75,spin:0,r:19});g.coinSpawn=Math.max(.72,1.45+Math.random()*.7-g.distance*.00018);}
+ g.obstacles.forEach(function(o){o.x-=g.speed*dt;});g.missiles.forEach(function(m){m.age+=dt;m.x+=Math.max(g.speed,245)*1.65*dt;if(m.target&&g.obstacles.indexOf(m.target)!==-1&&m.target.x<790&&m.x+18>=m.target.x){g.obstacles=g.obstacles.filter(function(o){return o!==m.target;});m.hit=true;}});g.missiles=g.missiles.filter(function(m){return !m.hit&&m.x<850&&m.age<2.5;});g.coins.forEach(function(o){o.x-=g.speed*dt;o.spin+=dt*7;if(g.magnetTimer>0){var tx=145,ty=g.ground-43+g.playerY,dx=tx-o.x,dy=ty-o.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<260&&dist>1){var pull=Math.min(1,dt*5);o.x+=dx*pull;o.y+=dy*pull;}}});
+ var px=112,py=g.ground-78+g.playerY;
+ // برخورد سکه با محدوده بدن شخصیت؛ با نزدیک‌شدن سکه حذف و جایزه ثبت می‌شود.
+ for(var ci=g.coins.length-1;ci>=0;ci--){var coin=g.coins[ci],cx=Math.max(px+7,Math.min(coin.x,px+49)),cy=Math.max(py+5,Math.min(coin.y,py+69));var dx=coin.x-cx,dy=coin.y-cy;if(dx*dx+dy*dy<=(coin.r+5)*(coin.r+5)){g.coins.splice(ci,1);appData.gameCoins=(appData.gameCoins||0)+1;appData.gamePoints=(appData.gamePoints||0)+1;saveData();updateGameStats();renderGameShop();showToast('🪙 سکه گرفتی! +۱ امتیاز');}}
+ g.obstacles=g.obstacles.filter(function(o){return o.x>-90;});g.coins=g.coins.filter(function(o){return o.x>-40;});
+ if((appData.gameCharacter||'amir')!=='doctor'){for(var i=0;i<g.obstacles.length;i++){var o=g.obstacles[i],ox=o.kind==='crate'?o.x+7:o.x+9,ow=o.kind==='crate'?o.w-14:o.w-18;if(px+43>ox&&px+9<ox+ow&&py+69>g.ground-o.h+4){gameOverAmir();return;}}}
+ var milestones=Math.floor(g.distance/250);if(milestones>g.awarded){var earned=(milestones-g.awarded)*50;g.awarded=milestones;appData.gamePoints=(appData.gamePoints||0)+earned;saveData();updateGameStats();renderGameShop();showToast('🏆 '+gameFa(earned)+' امتیاز گرفتی!');}if(g.distance>(appData.gameBest||0)){appData.gameBest=Math.floor(g.distance);}updateGameStats();}
+function gameOverAmir(){amirGame.running=false;cancelAnimationFrame(amirGame.raf);saveData();showGameOverlay('🏁 بازی تموم شد!','مسافت: '+gameFa(amirGame.distance)+' متر | رکورد: '+gameFa(appData.gameBest)+' متر','دوباره بازی کن');}
+function pixelBlock(ctx,x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
+function drawPixelPerson(ctx,x,y,skin,frame,scale){scale=scale||1;ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);var bob=(Math.floor(frame*10)%2)?1:0;ctx.translate(0,bob);var r=function(a,b,w,h,c){pixelBlock(ctx,a,b,w,h,c);};
+ // shared shoes, legs and face silhouette
+ if(skin==='mehrdad'){
+  // dark swept hair
+  r(12,2,27,9,'#17151a');r(9,7,31,7,'#242027');r(11,12,27,15,'#d99568');r(10,16,4,9,'#d99568');r(36,16,4,9,'#d99568');
+  r(15,17,5,5,'#211b1a');r(29,17,5,5,'#211b1a');r(14,16,7,2,'#30201c');r(28,16,7,2,'#30201c');r(22,24,7,2,'#a95c4c');r(18,27,13,2,'#fff0df');
+  r(11,30,29,20,'#f2eee4');r(18,30,14,21,'#fffaf0');r(23,31,3,19,'#d6d0c6');r(10,33,8,17,'#e7e1d7');r(36,33,8,17,'#e7e1d7');r(22,36,2,2,'#c8c0b6');r(22,43,2,2,'#c8c0b6');
+ }else if(skin==='shahram'){
+  // Shahram: dense curly black hair, bright blue eyes, dark modern outfit
+  r(10,1,31,9,'#17151b');r(7,5,36,10,'#211d26');r(10,2,7,6,'#302936');r(18,0,7,7,'#28222e');r(27,1,7,7,'#302936');r(35,4,7,7,'#211d26');
+  r(11,13,29,15,'#d99568');r(8,17,4,9,'#d99568');r(39,17,4,9,'#d99568');
+  r(14,18,8,3,'#27202a');r(28,18,8,3,'#27202a');r(15,21,6,4,'#55b9f5');r(29,21,6,4,'#55b9f5');r(17,22,2,3,'#172b49');r(31,22,2,3,'#172b49');
+  r(22,26,7,2,'#a85f50');r(18,29,14,2,'#f4d2b7');
+  r(10,31,32,20,'#252735');r(18,31,16,21,'#171923');r(9,34,10,17,'#303345');r(34,34,10,17,'#303345');r(22,31,3,20,'#555d77');
+}else if(skin==='rostam'){
+  // Rostam: fair skin, heroic simple outfit and red shoes
+  r(12,2,29,8,'#49301f');r(9,7,34,9,'#62432d');r(12,15,28,14,'#f1c9a8');r(15,19,6,4,'#211b19');r(30,19,6,4,'#211b19');r(22,26,8,2,'#9b5b50');r(10,31,32,20,'#596579');r(18,31,16,21,'#20232d');r(8,34,10,17,'#6f7b8e');r(35,34,10,17,'#6f7b8e');
+ }else if(skin==='fereydoon'){
+  // Fereydoon: seated elderly man, white hair, black glasses, serious face, blue shirt and cream trousers
+  r(12,2,29,8,'#e8e8e5');r(9,7,34,9,'#f5f4ef');r(12,15,28,14,'#efc9a8');r(13,18,10,5,'#111');r(28,18,10,5,'#111');r(23,25,5,2,'#9b6557');r(10,31,32,20,'#3979bd');r(18,31,16,21,'#4d91d2');r(9,50,34,9,'#e8d7b5');r(5,39,7,19,'#3979bd');r(40,39,7,19,'#3979bd');
+ }else if(skin==='doctor'){
+  // Dr Bi Gham, inspired by the supplied photo: short gray hair, dark polo, neon vest
+  r(12,2,29,8,'#bfc2bd');r(9,7,34,9,'#d0d2ce');r(12,15,28,14,'#d9a982');r(15,19,6,4,'#29221e');r(30,19,6,4,'#29221e');r(22,26,8,2,'#a56c58');r(10,31,32,20,'#252a2b');r(7,32,8,20,'#b7e52d');r(37,32,8,20,'#b7e52d');r(18,31,16,21,'#252a2b');r(10,51,32,9,'#d8d2c5');
+ }else if(skin==='ninja'){
+  r(12,5,29,13,'#171827');r(10,14,32,14,'#d99568');r(11,18,30,8,'#191a29');r(9,15,34,5,'#d52c4c');r(14,20,6,3,'#fff');r(29,20,6,3,'#fff');r(13,30,28,21,'#22243a');r(22,30,7,21,'#b82b45');r(10,34,8,15,'#171827');r(38,34,8,15,'#171827');
+ }else if(skin==='royal'){
+  r(14,0,27,8,'#e7b52e');r(11,6,34,5,'#ffdc54');r(15,11,26,17,'#d99568');r(14,16,6,5,'#201b19');r(31,16,6,5,'#201b19');r(11,30,32,21,'#244b9a');r(23,30,9,21,'#edc54b');r(8,32,8,17,'#a82e43');r(39,32,8,17,'#a82e43');r(13,29,28,4,'#d7ad42');
+ }else{
+  // Amir: recognizable brown fringe, gray blazer, black shirt
+  r(12,2,29,8,'#4b2c1d');r(9,7,34,9,'#684127');r(11,12,30,5,'#795033');r(12,15,28,14,'#d99568');r(9,18,4,8,'#d99568');r(39,18,4,8,'#d99568');
+  r(15,19,6,5,'#201b19');r(30,19,6,5,'#201b19');r(14,17,8,2,'#38271f');r(29,17,8,2,'#38271f');r(22,26,8,2,'#a85f50');r(19,29,14,2,'#f4d2b7');
+  r(10,31,32,20,'#9ba2af');r(18,31,16,21,'#181a25');r(9,34,10,17,'#7e8796');r(34,34,10,17,'#858e9d');r(13,31,7,4,'#c0c5ce');r(34,31,6,4,'#c0c5ce');r(22,31,3,20,'#282b37');
+ }
+ // legs, shoes and seated pose
+ if(skin==='fereydoon'){r(4,48,5,19,'#80522f');r(43,48,5,19,'#80522f');r(13,50,12,8,'#e8d7b5');r(28,50,12,8,'#e8d7b5');r(7,66,39,4,'#80522f');r(10,70,4,8,'#80522f');r(39,70,4,8,'#80522f');}else{var leg=Math.floor(frame*12)%2?3:0;r(15,49,10,11,'#20212a');r(29,49,10,11,'#20212a');if(leg){r(13,53,10,7,'#20212a');r(32,48,8,9,'#20212a');}var shoe=skin==='rostam'?'#e32636':'#f7f7f5';r(10,59,15,6,shoe);r(28,58,16,6,shoe);r(9,63,17,3,skin==='rostam'?'#a81726':'#252633');r(27,62,18,3,skin==='rostam'?'#a81726':'#252633');}
+ // arms
+ r(5,34,7,16,skin==='mehrdad'?'#e9e3d8':skin==='amir'?'#8e96a4':'#20212a');r(41,34,7,15,skin==='mehrdad'?'#e9e3d8':skin==='amir'?'#8e96a4':'#20212a');r(4,47,7,6,'#d99568');r(42,46,7,6,'#d99568');ctx.restore();}
+function drawCloud(ctx,x,y,s){ctx.fillStyle='#fff7f3';ctx.fillRect(x,y+10*s,54*s,12*s);ctx.fillRect(x+10*s,y,24*s,18*s);ctx.fillRect(x+29*s,y+5*s,20*s,17*s);ctx.fillStyle='#dce7ff';ctx.fillRect(x+5*s,y+20*s,44*s,3*s);}
+function drawCactus(ctx,x,y){var r=function(a,b,w,h,c){pixelBlock(ctx,x+a,y+b,w,h,c);};r(12,0,12,42,'#218b45');r(15,4,6,34,'#45b95a');r(0,16,12,8,'#218b45');r(0,10,7,14,'#218b45');r(0,10,5,5,'#45b95a');r(24,23,11,8,'#218b45');r(29,13,7,18,'#218b45');r(30,13,6,5,'#45b95a');}
+function drawObstacle(ctx,o,g){if(o.kind==='crate'){ctx.fillStyle='#9a5427';ctx.fillRect(o.x,g-o.h,o.w,o.h);ctx.fillStyle='#d88b45';ctx.fillRect(o.x+5,g-o.h+5,o.w-10,o.h-10);ctx.strokeStyle='#713d25';ctx.lineWidth=5;ctx.strokeRect(o.x+5,g-o.h+5,o.w-10,o.h-10);ctx.beginPath();ctx.moveTo(o.x+8,g-o.h+8);ctx.lineTo(o.x+o.w-8,g-8);ctx.moveTo(o.x+o.w-8,g-o.h+8);ctx.lineTo(o.x+8,g-8);ctx.stroke();}else{for(var i=0;i<3;i++){var sx=o.x+i*18;ctx.fillStyle='#59617e';ctx.beginPath();ctx.moveTo(sx,g);ctx.lineTo(sx+9,g-o.h);ctx.lineTo(sx+18,g);ctx.closePath();ctx.fill();ctx.fillStyle='#f4f1ff';ctx.beginPath();ctx.moveTo(sx+7,g-7);ctx.lineTo(sx+9,g-o.h+8);ctx.lineTo(sx+12,g-7);ctx.fill();}}}
+function drawAmirGame(){var c=amirGame.canvas;if(!c)return;var ctx=amirGame.ctx,w=c.width,h=c.height,g=amirGame.ground,world=amirGame.world;ctx.clearRect(0,0,w,h);
+ // sky and sun
+ var grad=ctx.createLinearGradient(0,0,0,g);grad.addColorStop(0,'#5796f5');grad.addColorStop(1,'#b7c7ff');ctx.fillStyle=grad;ctx.fillRect(0,0,w,g);ctx.fillStyle='#fff0b7';ctx.beginPath();ctx.arc(660,82,48,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe49a';ctx.beginPath();ctx.arc(660,82,38,0,Math.PI*2);ctx.fill();
+ drawCloud(ctx,35+((world*.12)%930)-90,75,1.1);drawCloud(ctx,360+((world*.1)%950)-90,40,.8);drawCloud(ctx,690+((world*.13)%950)-90,105,.7);
+ // city silhouette parallax
+ for(var i=0;i<15;i++){var bx=((i*75-(world*.22)%1125)+1125)%1125-60,bh=85+(i*37%80);ctx.fillStyle=i%2?'#788cdb':'#6d80cf';ctx.fillRect(bx,g-bh-8,48,bh);ctx.fillRect(bx+12,g-bh-20,23,20);ctx.fillStyle='#a8baf3';for(var wy=0;wy<4;wy++)for(var wx=0;wx<2;wx++)ctx.fillRect(bx+8+wx*17,g-bh+10+wy*18,6,8);}
+ // far hills and ground
+ ctx.fillStyle='#6688ce';ctx.fillRect(0,g-27,w,27);for(var hidx=0;hidx<10;hidx++){var hx=((hidx*110-(world*.38)%1100)+1100)%1100-50;ctx.fillStyle='#547dbd';ctx.beginPath();ctx.arc(hx,g-20,45,Math.PI,0);ctx.fill();}
+ ctx.fillStyle='#d99a62';ctx.fillRect(0,g,w,h-g);ctx.fillStyle='#8b512f';ctx.fillRect(0,g+12,w,h-g-12);ctx.fillStyle='#7fd05d';ctx.fillRect(0,g,w,12);ctx.fillStyle='#3c9846';ctx.fillRect(0,g+10,w,5);for(var k=0;k<22;k++){var tx=((k*44-(world*.95)%968)+968)%968;ctx.fillStyle=k%2?'#b46e43':'#8f542f';ctx.fillRect(tx,g+25+(k%3)*12,23,9);ctx.fillStyle='#d18b54';ctx.fillRect(tx+5,g+28+(k%3)*12,5,3);}
+ // cacti scrolling behind obstacles
+ if((appData.gameCharacter||'amir')!=='doctor'){for(var ci=0;ci<4;ci++){var cx=((ci*255-(world*.72)%1020)+1020)%1020-40;drawCactus(ctx,cx,g-56);}}
+ // coins
+ amirGame.coins.forEach(function(o){ctx.save();ctx.translate(o.x,o.y);ctx.scale(.78+Math.abs(Math.sin(o.spin))*.22,1);ctx.fillStyle='#a95b12';ctx.beginPath();ctx.arc(0,0,17,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffbf24';ctx.beginPath();ctx.arc(0,0,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe66b';ctx.fillRect(-3,-9,6,18);ctx.fillRect(-8,-3,16,6);ctx.restore();});
+ amirGame.obstacles.forEach(function(o){drawObstacle(ctx,o,g);});amirGame.missiles.forEach(function(m){ctx.save();ctx.translate(m.x,m.y);ctx.fillStyle='#e53935';ctx.fillRect(-17,-6,30,12);ctx.fillStyle='#ffd54f';ctx.beginPath();ctx.moveTo(13,-6);ctx.lineTo(25,0);ctx.lineTo(13,6);ctx.fill();ctx.fillStyle='#ff8a35';ctx.beginPath();ctx.moveTo(-17,-5);ctx.lineTo(-29,0);ctx.lineTo(-17,5);ctx.fill();ctx.restore();});
+ // player shadow and pixel hero
+ ctx.fillStyle='#493d6c55';ctx.beginPath();ctx.ellipse(145,g-2,29,5,0,0,Math.PI*2);ctx.fill();var activeSkin=appData.gameCharacter||'amir';var fixedFereydoon=activeSkin==='fereydoon';drawPixelPerson(ctx,111,g-78+(fixedFereydoon?0:amirGame.playerY),activeSkin,fixedFereydoon?0:amirGame.frame,1.18);if(activeSkin==='fereydoon'){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(85,g-151,125,38,9);ctx.fill();ctx.stroke();ctx.fillStyle='#222';ctx.font='bold 18px Tahoma';ctx.textAlign='center';ctx.fillText('خب سوال',147,g-126);}if(activeSkin==='doctor'){ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(5,g-166,435,54,10);ctx.fill();ctx.stroke();ctx.fillStyle='#222';ctx.font='bold 29px Tahoma';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('.....ننه مانعی که جلوم باشه',222,g-139);ctx.textBaseline='alphabetic';}
+ // arcade HUD
+ ctx.fillStyle='rgba(48,25,105,.9)';ctx.fillRect(18,15,158,42);ctx.strokeStyle='#c4a7ff';ctx.lineWidth=3;ctx.strokeRect(18,15,158,42);ctx.fillStyle='#ffcf35';ctx.font='bold 23px Tahoma';ctx.textAlign='left';ctx.fillText('★',30,44);ctx.fillStyle='#fff';ctx.font='bold 19px Tahoma';ctx.fillText(gameFa(appData.gamePoints||0),66,43);ctx.fillStyle='rgba(48,25,105,.9)';ctx.fillRect(540,15,238,42);ctx.strokeStyle='#c4a7ff';ctx.strokeRect(540,15,238,42);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 18px Tahoma';ctx.fillText('مسافت: '+gameFa(amirGame.distance)+' متر',659,43);
+ if(!amirGame.running){ctx.fillStyle='rgba(44,25,105,.85)';ctx.fillRect(570,68,208,34);ctx.fillStyle='#ffe16a';ctx.font='bold 15px Tahoma';ctx.fillText('هر ۲۵۰ متر = ۵۰ امتیاز',674,91);} }
+
+
+loadData();
+if(appData.gameCharacter==='ninja'||appData.gameCharacter==='royal'){appData.gameCharacter='amir';saveData();}
+if(Array.isArray(appData.gameUnlocked)){appData.gameUnlocked=appData.gameUnlocked.filter(function(id){return id!=='ninja'&&id!=='royal';});}
+if(appData.name && appData.mbtiType){ document.getElementById('user-badge').textContent=appData.name; enterDashboard(); }
+</script>
+</body>
+</html>
