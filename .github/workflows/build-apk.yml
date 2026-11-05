@@ -34,8 +34,16 @@ jobs:
           mkdir -p www
           cp index.html www/index.html
 
+      - name: Prepare app icon
+        run: |
+          mkdir -p assets
+          cp icon.png assets/icon.png
+
       - name: Add Android platform
         run: npx cap add android
+
+      - name: Generate Android icons
+        run: npx --yes @capacitor/assets@3 generate --android
 
       - name: Sync Capacitor
         run: npx cap sync android
