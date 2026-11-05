@@ -1,0 +1,8 @@
+{
+  "appId": "com.poolyar.app",
+  "appName": "یار",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
