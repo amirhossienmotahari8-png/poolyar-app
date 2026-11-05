@@ -47,7 +47,11 @@ jobs:
 
       - name: Sync Capacitor
         run: npx cap sync android
-
+      - name : Check Android SDK versions 
+        run: |
+       echo "Android SDK versions:"
+       gerp -nE 'copmileSdkversion | Targetsdkversion ' android/variables.gradle 
+      
       - name: Build APK
         run: |
           cd android
