@@ -6,10 +6,10 @@
     "build": "echo Build started"
   },
   "dependencies": {
-    "@capacitor/core": "^8.0.0",
-    "@capacitor/android": "^8.0.0"
+    "@capacitor/core":"^6.1.0",
+    "@capacitor/android":"^6.1.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.0.0"
+    "@capacitor/cli": "^6.1.0"
   }
 }
