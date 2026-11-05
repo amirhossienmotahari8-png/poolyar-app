@@ -49,8 +49,8 @@ jobs:
         run: npx cap sync android
       - name : Check Android SDK versions 
         run: |
-       echo "Android SDK versions:"
-       gerp -nE 'copmileSdkversion | Targetsdkversion ' android/variables.gradle 
+          echo  "Android SDK versions:"
+          grep  -nE 'compileSdkversion | targetSdkVersion ' android/variables.gradle 
       
       - name: Build APK
         run: |
