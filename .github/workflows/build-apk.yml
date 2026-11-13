@@ -182,7 +182,7 @@ jobs:
           }
           JAVAEOF
 
-          # Remove leading spaces from the Java file (heredoc indentation fix)
+          # Remove leading spaces from the Java file
           sed -i 's/^          //' android/app/src/main/java/com/poolyar/app/MyketBillingPlugin.java
 
           # 6. Register plugin in MainActivity
