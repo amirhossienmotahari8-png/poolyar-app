@@ -51,9 +51,28 @@ jobs:
         run: |
           set -e
 
-          # 1. Add Myket Maven repository
+          echo "=== Current settings.gradle ==="
+          cat android/settings.gradle
+
+          echo "=== Current app/build.gradle ==="
+          cat android/app/build.gradle
+
+          # 1. Add Myket Maven repository to settings.gradle (for modern Gradle)
           if ! grep -q "maven.myket.ir" android/settings.gradle; then
-            sed -i '/repositories {/a\        maven { url "https://maven.myket.ir" }' android/settings.gradle
+            # Try dependencyResolutionManagement block first
+            if grep -q "dependencyResolutionManagement" android/settings.gradle; then
+              sed -i '/repositories {/a\        maven { url "https://maven.myket.ir" }' android/settings.gradle
+            else
+              # Fallback for older structure
+              sed -i '/repositories {/a\        maven { url "https://maven.myket.ir" }' android/settings.gradle
+            fi
+          fi
+
+          # Also add to project level build.gradle if exists
+          if [ -f android/build.gradle ]; then
+            if ! grep -q "maven.myket.ir" android/build.gradle; then
+              sed -i '/repositories {/a\        maven { url "https://maven.myket.ir" }' android/build.gradle || true
+            fi
           fi
 
           # 2. Enable BuildConfig feature
@@ -202,13 +221,19 @@ jobs:
             echo "WARNING: MainActivity.java not found"
           fi
 
+          echo "=== After injection settings.gradle ==="
+          cat android/settings.gradle
+
+          echo "=== After injection app/build.gradle ==="
+          cat android/app/build.gradle
+
           echo "Myket Billing injection completed successfully"
 
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
