@@ -1,4 +1,3 @@
-
 name: Build PoolYar APK
 
 on:
@@ -47,11 +46,209 @@ jobs:
 
       - name: Sync Capacitor
         run: npx cap sync android
-      - name : Check Android SDK versions 
+
+      # ==================== Myket Billing Injection ====================
+      - name: Inject Myket Billing
         run: |
-          echo  "Android SDK versions:"
-          grep  -nE 'compileSdkversion | targetSdkVersion ' android/variables.gradle 
-      
+          set -e
+
+          # 1. Add Myket Maven repository to settings.gradle
+          if ! grep -q "maven.myket.ir" android/settings.gradle; then
+            sed -i '/repositories {/a\        maven { url "https://maven.myket.ir" }' android/settings.gradle
+          fi
+
+          # 2. Add Myket dependency + public key to app/build.gradle
+          python3 << 'EOF'
+          from pathlib import Path
+
+          gradle = Path("android/app/build.gradle")
+          content = gradle.read_text()
+
+          # Add dependency
+          if "ir.myket:billing" not in content:
+              content = content.replace(
+                  "dependencies {",
+                  '''dependencies {
+      implementation "ir.myket:billing:2.2"'''
+              )
+
+          # Add manifestPlaceholders + public key inside defaultConfig
+          if "IAB_PUBLIC_KEY" not in content:
+              public_key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCTRKSOHcxV5WfAXAkrzgNjWZ25ZQmRb7ppjxbPfmP8+y9iaP1Kk09kVITVAT2aRW6RwMmWKaVFfx7wQwPCLKLa2JXpZ2cVFR5cZYuTG1KAr9WLQqp4/5VpYFvzUwveRmsZtbBZNu+HKYujhUoI3NIZRp/Pqj1fjzlDgaDUaTcjpwIDAQAB"
+              injection = f'''
+              // Myket Billing
+              def marketApplicationId = "ir.mservices.market"
+              def marketBindAddress = "ir.mservices.market.InAppBillingService.BIND"
+              manifestPlaceholders.marketApplicationId = marketApplicationId
+              manifestPlaceholders.marketBindAddress = marketBindAddress
+              manifestPlaceholders.marketPermission = marketApplicationId + ".BILLING"
+              buildConfigField "String", "IAB_PUBLIC_KEY", "\\"{public_key}\\""
+          '''
+              # Insert before the closing of defaultConfig
+              content = content.replace(
+                  "defaultConfig {",
+                  "defaultConfig {" + injection
+              )
+
+          gradle.write_text(content)
+          print("build.gradle updated")
+          EOF
+
+          # 3. Create MyketBillingPlugin.java
+          PACKAGE_DIR="android/app/src/main/java/com/poolyar/app"
+          mkdir -p "$PACKAGE_DIR"
+
+          cat > "$PACKAGE_DIR/MyketBillingPlugin.java" << 'JAVA'
+          package com.poolyar.app;
+
+          import android.util.Log;
+          import com.getcapacitor.JSObject;
+          import com.getcapacitor.Plugin;
+          import com.getcapacitor.PluginCall;
+          import com.getcapacitor.PluginMethod;
+          import com.getcapacitor.annotation.CapacitorPlugin;
+          import ir.myket.billingclient.IabHelper;
+          import ir.myket.billingclient.util.IabResult;
+          import ir.myket.billingclient.util.Inventory;
+          import ir.myket.billingclient.util.Purchase;
+          import java.util.Arrays;
+          import java.util.List;
+
+          @CapacitorPlugin(name = "MyketBilling")
+          public class MyketBillingPlugin extends Plugin {
+
+              private static final String TAG = "MyketBilling";
+              private IabHelper mHelper;
+              private boolean isSetupDone = false;
+
+              private static final String SKU_SILVER = "silveryar";
+              private static final String SKU_GOLD = "goldyar";
+
+              @PluginMethod
+              public void initialize(PluginCall call) {
+                  if (mHelper != null) {
+                      call.resolve();
+                      return;
+                  }
+
+                  String publicKey = com.poolyar.app.BuildConfig.IAB_PUBLIC_KEY;
+                  mHelper = new IabHelper(getContext(), publicKey);
+                  mHelper.enableDebugLogging(true, TAG);
+
+                  mHelper.startSetup(result -> {
+                      if (!result.isSuccess()) {
+                          Log.e(TAG, "Setup failed: " + result.getMessage());
+                          isSetupDone = false;
+                          call.reject("Setup failed: " + result.getMessage());
+                          return;
+                      }
+                      isSetupDone = true;
+                      Log.d(TAG, "Myket Billing setup successful");
+                      call.resolve();
+                  });
+              }
+
+              @PluginMethod
+              public void purchase(PluginCall call) {
+                  if (!isSetupDone || mHelper == null) {
+                      call.reject("Billing service is not ready");
+                      return;
+                  }
+
+                  String sku = call.getString("sku");
+                  if (sku == null || sku.isEmpty()) {
+                      call.reject("SKU is required");
+                      return;
+                  }
+
+                  String developerPayload = "poolyar_" + System.currentTimeMillis();
+
+                  mHelper.launchPurchaseFlow(getActivity(), sku, (result, purchase) -> {
+                      if (result.isFailure() || purchase == null) {
+                          Log.e(TAG, "Purchase failed: " + result.getMessage());
+                          call.reject(result.getMessage() != null ? result.getMessage() : "Purchase failed");
+                          return;
+                      }
+
+                      // Non-consumable → do NOT consume
+                      JSObject ret = new JSObject();
+                      ret.put("sku", purchase.getSku());
+                      ret.put("token", purchase.getToken());
+                      ret.put("orderId", purchase.getOrderId());
+                      ret.put("success", true);
+
+                      Log.d(TAG, "Purchase success: " + purchase.getSku());
+                      call.resolve(ret);
+                  }, developerPayload);
+              }
+
+              @PluginMethod
+              public void getOwnedProducts(PluginCall call) {
+                  if (!isSetupDone || mHelper == null) {
+                      call.reject("Billing service is not ready");
+                      return;
+                  }
+
+                  List<String> skuList = Arrays.asList(SKU_SILVER, SKU_GOLD);
+
+                  mHelper.queryInventoryAsync(true, skuList, (result, inventory) -> {
+                      if (result.isFailure() || inventory == null) {
+                          call.reject("Failed to query inventory");
+                          return;
+                      }
+
+                      JSObject ret = new JSObject();
+                      boolean hasSilver = inventory.getPurchase(SKU_SILVER) != null;
+                      boolean hasGold = inventory.getPurchase(SKU_GOLD) != null;
+
+                      ret.put("hasSilver", hasSilver);
+                      ret.put("hasGold", hasGold);
+
+                      if (hasGold) {
+                          ret.put("plan", "gold");
+                      } else if (hasSilver) {
+                          ret.put("plan", "silver");
+                      } else {
+                          ret.put("plan", "free");
+                      }
+
+                      call.resolve(ret);
+                  });
+              }
+
+              @Override
+              protected void handleOnDestroy() {
+                  if (mHelper != null) {
+                      mHelper.dispose();
+                      mHelper = null;
+                  }
+                  super.handleOnDestroy();
+              }
+          }
+          JAVA
+
+          # 4. Register plugin in MainActivity
+          MAIN_ACTIVITY=$(find android/app/src/main/java -name "MainActivity.java" | head -1)
+          if [ -n "$MAIN_ACTIVITY" ]; then
+            if ! grep -q "MyketBillingPlugin" "$MAIN_ACTIVITY"; then
+              # Add import
+              sed -i 's/import com.getcapacitor.BridgeActivity;/import com.getcapacitor.BridgeActivity;\nimport com.poolyar.app.MyketBillingPlugin;/' "$MAIN_ACTIVITY"
+
+              # Register plugin (for Capacitor 6 style)
+              if grep -q "registerPlugin" "$MAIN_ACTIVITY"; then
+                sed -i 's/registerPlugin(.*);/&\n        registerPlugin(MyketBillingPlugin.class);/' "$MAIN_ACTIVITY"
+              else
+                # Older style or empty onCreate
+                sed -i '/super.onCreate/a\        registerPlugin(MyketBillingPlugin.class);' "$MAIN_ACTIVITY"
+              fi
+              echo "MainActivity updated"
+            fi
+          else
+            echo "WARNING: MainActivity.java not found"
+          fi
+
+          echo "Myket Billing injection completed"
+
       - name: Build APK
         run: |
           cd android
