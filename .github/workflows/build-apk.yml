@@ -56,20 +56,25 @@ jobs:
             sed -i '/repositories {/a\        maven { url "https://maven.myket.ir" }' android/settings.gradle
           fi
 
-          # 2. Add dependency to build.gradle
+          # 2. Enable BuildConfig feature
+          if ! grep -q "buildConfig true" android/app/build.gradle; then
+            sed -i '/android {/a\    buildFeatures {\n        buildConfig true\n    }' android/app/build.gradle
+          fi
+
+          # 3. Add dependency
           if ! grep -q "ir.myket:billing" android/app/build.gradle; then
             sed -i 's/dependencies {/dependencies {\n    implementation "ir.myket:billing:2.2"/' android/app/build.gradle
           fi
 
-          # 3. Add public key and manifest placeholders
+          # 4. Add public key and manifest placeholders
           if ! grep -q "IAB_PUBLIC_KEY" android/app/build.gradle; then
             sed -i '/defaultConfig {/a\        def marketApplicationId = "ir.mservices.market"\n        def marketBindAddress = "ir.mservices.market.InAppBillingService.BIND"\n        manifestPlaceholders.marketApplicationId = marketApplicationId\n        manifestPlaceholders.marketBindAddress = marketBindAddress\n        manifestPlaceholders.marketPermission = marketApplicationId + ".BILLING"\n        buildConfigField "String", "IAB_PUBLIC_KEY", "\\"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCTRKSOHcxV5WfAXAkrzgNjWZ25ZQmRb7ppjxbPfmP8+y9iaP1Kk09kVITVAT2aRW6RwMmWKaVFfx7wQwPCLKLa2JXpZ2cVFR5cZYuTG1KAr9WLQqp4/5VpYFvzUwveRmsZtbBZNu+HKYujhUoI3NIZRp/Pqj1fjzlDgaDUaTcjpwIDAQAB\\""' android/app/build.gradle
           fi
 
-          # 4. Create plugin directory
+          # 5. Create plugin directory
           mkdir -p android/app/src/main/java/com/poolyar/app
 
-          # 5. Write MyketBillingPlugin.java
+          # 6. Write MyketBillingPlugin.java
           cat > android/app/src/main/java/com/poolyar/app/MyketBillingPlugin.java << 'JAVAEOF'
           package com.poolyar.app;
 
@@ -185,7 +190,7 @@ jobs:
           # Remove leading spaces from the Java file
           sed -i 's/^          //' android/app/src/main/java/com/poolyar/app/MyketBillingPlugin.java
 
-          # 6. Register plugin in MainActivity
+          # 7. Register plugin in MainActivity
           MAIN_ACTIVITY=$(find android/app/src/main/java -name "MainActivity.java" | head -1)
           if [ -n "$MAIN_ACTIVITY" ]; then
             if ! grep -q "MyketBillingPlugin" "$MAIN_ACTIVITY"; then
