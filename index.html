@@ -481,7 +481,7 @@
 
       <div class="card" style="background:var(--input-bg);">
         <p style="font-size:.75rem;color:var(--text-secondary);line-height:1.85;text-align:center;">
-          ⚠️ پرداخت درون‌برنامه‌ای مایکت هنوز به این نسخه متصل نشده است؛ فعال‌سازی اشتراک فعلاً آزمایشی است.
+          💳 پرداخت از طریق مایکت انجام می‌شود. پس از خرید موفق، پلن به‌صورت دائمی فعال خواهد شد.
         </p>
       </div>
     </div>
@@ -782,7 +782,89 @@ function addCustomCategory(){ if(!hasSilver()){alert('فقط در نقره‌ی�
 function renderCustomCategories(){ var div=document.getElementById('custom-categories-list'); if(!div)return; if(!appData.customCategories||!appData.customCategories.length){div.innerHTML='<div class="empty" style="padding:12px;">هنوز دسته سفارشی نداری</div>';return;} div.innerHTML=''; appData.customCategories.forEach(function(cat,i){ var el=document.createElement('div'); el.className='custom-cat-item'; el.innerHTML='<div style="display:flex;align-items:center;"><span class="custom-cat-icon">'+cat.icon+'</span><span>'+cat.name+'</span></div><button class="delete-btn" onclick="deleteCustomCategory('+i+')">×</button>'; div.appendChild(el); }); }
 function deleteCustomCategory(i){ if(confirm('حذف شود؟')){ appData.customCategories.splice(i,1); saveData(); renderCustomCategories(); populateCategorySelect(); showToast('🗑️ حذف شد'); } }
 
-function activatePlan(plan){ var label=plan==='silver'?'نقره‌یار':'الماس‌یار'; if(confirm('پلن «'+label+'» فعال شود؟\n(نسخه دمو)')){ appData.plan=plan; saveData(); showToast('✅ '+label+' فعال شد!'); renderDashboard(); } }
+// ====================== Myket Billing ======================
+const MyketBilling = {
+  isReady: false,
+
+  async init() {
+    try {
+      if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.MyketBilling) {
+        console.warn('پلاگین MyketBilling در دسترس نیست');
+        return false;
+      }
+      await window.Capacitor.Plugins.MyketBilling.initialize();
+      this.isReady = true;
+      console.log('Myket Billing آماده شد');
+      return true;
+    } catch (e) {
+      console.error('خطا در راه‌اندازی مایکت:', e);
+      return false;
+    }
+  },
+
+  async buy(sku) {
+    if (!this.isReady) {
+      showToast('سرویس پرداخت آماده نیست');
+      return null;
+    }
+    try {
+      const result = await window.Capacitor.Plugins.MyketBilling.purchase({ sku: sku });
+      return result;
+    } catch (e) {
+      console.error('خطای خرید:', e);
+      var msg = (e && e.message) ? e.message : 'خرید انجام نشد';
+      if (msg.indexOf('cancel') !== -1 || msg.indexOf('لغو') !== -1) {
+        showToast('خرید لغو شد');
+      } else {
+        showToast('خطا در خرید: ' + msg);
+      }
+      return null;
+    }
+  },
+
+  async restore() {
+    if (!this.isReady) return null;
+    try {
+      const result = await window.Capacitor.Plugins.MyketBilling.getOwnedProducts();
+      return result;
+    } catch (e) {
+      console.error('خطا در بازیابی خریدها:', e);
+      return null;
+    }
+  }
+};
+
+async function activatePlan(plan) {
+  var sku = plan === 'silver' ? 'silveryar' : 'goldyar';
+  var label = plan === 'silver' ? 'نقره‌یار' : 'الماس‌یار';
+
+  if (!confirm('آیا می‌خواهید پلن «' + label + '» را خریداری کنید؟')) {
+    return;
+  }
+
+  // اگر پلاگین مایکت آماده نباشد، فعلاً نسخه دمو
+  if (!MyketBilling.isReady) {
+    if (confirm('پرداخت مایکت هنوز متصل نشده.\\nآیا می‌خواهید به‌صورت آزمایشی فعال شود؟')) {
+      appData.plan = plan;
+      saveData();
+      showToast('✅ ' + label + ' (آزمایشی) فعال شد');
+      renderDashboard();
+    }
+    return;
+  }
+
+  showToast('در حال انتقال به درگاه پرداخت مایکت...');
+
+  var result = await MyketBilling.buy(sku);
+
+  if (result && result.success) {
+    appData.plan = plan;
+    saveData();
+    showToast('✅ ' + label + ' با موفقیت فعال شد!');
+    renderDashboard();
+  }
+}
+
 function editInitialBalance(){ var val=prompt('موجودی اولیه:',appData.initialBalance||0); if(val===null)return; appData.initialBalance=parseFloat(val)||0; saveData(); renderDashboard(); showToast('✅ به‌روز شد'); }
 
 function addTransaction(){
@@ -1126,6 +1208,27 @@ loadData();
 if(appData.gameCharacter==='ninja'||appData.gameCharacter==='royal'){appData.gameCharacter='amir';saveData();}
 if(Array.isArray(appData.gameUnlocked)){appData.gameUnlocked=appData.gameUnlocked.filter(function(id){return id!=='ninja'&&id!=='royal';});}
 if(appData.name && appData.mbtiType){ document.getElementById('user-badge').textContent=appData.name; enterDashboard(); }
+
+// راه‌اندازی پرداخت مایکت + بازیابی خریدهای قبلی
+(async function initBilling() {
+  var ok = await MyketBilling.init();
+  if (!ok) return;
+
+  var owned = await MyketBilling.restore();
+  if (!owned) return;
+
+  if (owned.plan === 'gold' && appData.plan !== 'gold') {
+    appData.plan = 'gold';
+    saveData();
+    showToast('الماس‌یار شما بازیابی شد');
+    renderDashboard();
+  } else if (owned.plan === 'silver' && appData.plan !== 'silver' && appData.plan !== 'gold') {
+    appData.plan = 'silver';
+    saveData();
+    showToast('نقره‌یار شما بازیابی شد');
+    renderDashboard();
+  }
+})();
 </script>
 </body>
 </html>
